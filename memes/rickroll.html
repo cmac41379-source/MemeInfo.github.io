@@ -73,6 +73,12 @@
       box-shadow: 0 0 20px #ff0;
       border-radius: 10px;
       margin-bottom: 20px;
+      animation: tilt 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes tilt {
+      from { transform: rotate(-5deg); }
+      to { transform: rotate(5deg); }
     }
 
     a {
@@ -113,9 +119,8 @@
   </div>
 
   <div class="container">
-    <img class="rick-img"
-         src="https://upload.wikimedia.org/wikipedia/en/7/7b/Rick_Astley_-_Never_Gonna_Give_You_Up.png"
-         alt="Rick Astley">
+    <!-- Local Rick Astley Image -->
+    <img class="rick-img" src="OIP (26).webp" alt="Rick Astley">
 
     <h2>📜 Rickroll Origin</h2>
     <p>
