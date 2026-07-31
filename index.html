@@ -7,70 +7,89 @@
 
   <style>
     body {
+      background-color: #f2f2f2;
+      font-family: "Courier New", monospace;
+      color: #222;
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #4e54c8, #8f94fb);
-      color: white;
+      padding: 0;
+    }
+
+    header {
+      background-color: #ffcc00;
+      padding: 20px;
       text-align: center;
-      padding: 40px;
+      border-bottom: 4px solid #000;
     }
 
     h1 {
+      margin: 0;
       font-size: 3rem;
-      text-shadow: 0 0 15px rgba(255,255,255,0.7);
-      margin-bottom: 10px;
+      text-shadow: 2px 2px #000;
+      color: #fff;
     }
 
-    p {
-      font-size: 1.2rem;
-      opacity: 0.9;
+    .container {
+      width: 80%;
+      margin: auto;
+      margin-top: 30px;
+      background: #fff;
+      padding: 20px;
+      border: 3px solid #000;
+      box-shadow: 5px 5px 0px #000;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 2px dashed #000;
+      padding-bottom: 5px;
     }
 
     ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 30px;
+      list-style-type: square;
+      font-size: 1.3rem;
     }
 
     ul li {
-      margin: 15px 0;
+      margin: 10px 0;
     }
 
     ul li a {
-      background: rgba(255,255,255,0.15);
-      padding: 12px 20px;
-      border-radius: 10px;
-      color: white;
+      color: #0066ff;
       text-decoration: none;
-      font-size: 1.2rem;
-      transition: 0.2s;
-      display: inline-block;
+      font-weight: bold;
     }
 
     ul li a:hover {
-      background: rgba(255,255,255,0.3);
-      transform: scale(1.05);
+      text-decoration: underline;
     }
 
     footer {
-      margin-top: 50px;
+      text-align: center;
+      margin-top: 40px;
+      padding: 10px;
+      background-color: #ddd;
+      border-top: 3px solid #000;
       font-size: 1rem;
-      opacity: 0.7;
     }
   </style>
 </head>
 
 <body>
-  <h1>Meme Encyclopedia</h1>
-  <p>Welcome to the meme info site!</p>
+  <header>
+    <h1>Meme Encyclopedia</h1>
+  </header>
 
-  <h2>Memes</h2>
-  <ul>
-    <li><a href="memes/doge.html">Doge</a></li>
-  </ul>
+  <div class="container">
+    <p>Welcome to the ultimate retro meme info archive!</p>
+
+    <h2>Memes</h2>
+    <ul>
+      <li><a href="memes/doge.html">Doge</a></li>
+    </ul>
+  </div>
 
   <footer>
-    <p>Created by <strong>Manper</strong></p>
+    Created by <strong>Manper</strong> — Est. 2026
   </footer>
 </body>
 </html>
