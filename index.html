@@ -142,36 +142,6 @@
       text-align: left;
     }
 
-    .entry {
-      margin: 30px 0;
-      position: relative;
-    }
-
-    .entry::before {
-      content: "";
-      width: 20px;
-      height: 20px;
-      background: #ff0;
-      border: 3px solid #fff;
-      border-radius: 50%;
-      position: absolute;
-      left: -33px;
-      top: 5px;
-      box-shadow: 0 0 10px #ff0;
-    }
-
-    .year {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #ff0;
-      text-shadow: 0 0 10px #ff0;
-    }
-
-    .desc {
-      font-size: 1.2rem;
-      margin-top: 10px;
-    }
-
     footer {
       background: #000;
       color: #0f0;
@@ -239,8 +209,6 @@
     <button id="loginBtn">Login</button>
     <button id="signupBtn">Sign Up</button>
 
-    <!-- ❌ Forgot Password button removed -->
-
     <button id="logoutBtn" style="display:none;">Logout</button>
 
     <div id="welcomeBox"></div>
@@ -250,6 +218,20 @@
 
   <div class="banner">
     <span>🎉 WELCOME TO THE OFFICIAL MEME ARCHIVE 🎉 YOU’VE ENTERED THE MEME ZONE 🎉</span>
+  </div>
+
+  <!-- ⭐ VISITOR COUNTER ⭐ -->
+  <div id="visitorCounter" style="
+    background: rgba(0,0,0,0.6);
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    font-size: 1.2rem;
+    margin: 20px auto;
+    width: fit-content;
+    box-shadow: 0 0 10px #fff;
+  ">
+    Visitor Count: loading...
   </div>
 
   <div class="container">
@@ -322,6 +304,27 @@
     logoutBtn.onclick = () => {
       signOut(auth);
     };
+
+    // ⭐ VISITOR COUNTER ⭐
+    async function updateVisitorCounter() {
+      const counterRef = doc(db, "siteStats", "visitors");
+      const snap = await getDoc(counterRef);
+
+      let visits = 0;
+
+      if (snap.exists()) {
+        visits = snap.data().visits + 1;
+        await updateDoc(counterRef, { visits });
+      } else {
+        await setDoc(counterRef, { visits: 1 });
+        visits = 1;
+      }
+
+      document.getElementById("visitorCounter").innerText =
+        "Visitor Count: " + visits;
+    }
+
+    updateVisitorCounter();
 
     onAuthStateChanged(auth, async user => {
       if (user) {
