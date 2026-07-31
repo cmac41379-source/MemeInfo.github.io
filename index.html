@@ -18,12 +18,14 @@
   <p>Total visits: <span id="visits">Loading...</span></p>
 
   <script>
-    async function updateVisits() {
-      const res = await fetch("https://api.countapi.xyz/hit/manper-meme-site/visits");
-      const data = await res.json();
-      document.getElementById("visits").innerText = data.value;
-    }
-    updateVisits();
+    fetch("https://api.counterapi.dev/v1/meme-site/visits")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("visits").innerText = data.count;
+      })
+      .catch(() => {
+        document.getElementById("visits").innerText = "Error";
+      });
   </script>
 
   <footer>
@@ -31,3 +33,4 @@
   </footer>
 </body>
 </html>
+
