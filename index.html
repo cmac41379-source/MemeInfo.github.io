@@ -193,7 +193,7 @@
 
 <body>
 
-  <!-- ⭐ TOP‑LEFT COIN DISPLAY ⭐ -->
+  <!-- ⭐ FLOATING COIN DISPLAY ⭐ -->
   <div id="coinDisplay" style="
     position: fixed;
     top: 10px;
@@ -229,6 +229,8 @@
     <div id="welcomeBox"></div>
   </div>
 
+  <a href="profile.html" style="color:#0ff; font-weight:bold;">My Profile</a>
+
   <div class="banner">
     <span>🎉 WELCOME TO THE OFFICIAL MEME ARCHIVE 🎉 YOU’VE ENTERED THE MEME ZONE 🎉</span>
   </div>
@@ -253,7 +255,7 @@
     <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
   </footer>
 
-  <!-- ⭐ FIREBASE + AUTH + AUTO COINS ⭐ -->
+  <!-- ⭐ FIREBASE + AUTH + AUTO COINS + PROFILE FIELDS ⭐ -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
     import { 
@@ -318,7 +320,11 @@
         if (!snap.exists()) {
           await setDoc(userRef, {
             email: user.email,
-            coins: 0
+            coins: 0,
+            username: "",
+            bio: "",
+            pfp: "",
+            joined: new Date().toLocaleDateString()
           });
         }
 
@@ -329,7 +335,7 @@
           if (auth.currentUser) {
             autoAddCoin(auth.currentUser);
           }
-        }, 300000); // 300,000 ms = 5 minutes
+        }, 300000);
 
       } else {
         welcomeBox.innerHTML = "";
