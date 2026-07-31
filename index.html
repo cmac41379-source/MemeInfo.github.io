@@ -214,50 +214,65 @@
     <div id="welcomeBox"></div>
   </div>
 
-  <!-- ⭐ NEW BUTTON TO GO TO FEED ⭐ -->
-  <a href="feed.html" 
-     style="display:block; width:250px; margin:20px auto; padding:15px; text-align:center; background:#00ccff; border:3px solid #fff; border-radius:15px; font-family:Comic Sans MS; font-size:22px; text-decoration:none; color:#000; box-shadow:0 0 15px #fff;">
-      🚀 Go to Meme Feed
-  </a>
-
   <a href="profile.html" style="color:#0ff; font-weight:bold;">My Profile</a>
 
   <div class="banner">
     <span>🎉 WELCOME TO THE OFFICIAL MEME ARCHIVE 🎉 YOU’VE ENTERED THE MEME ZONE 🎉</span>
   </div>
+<!-- ⭐ VISITOR COUNTER ⭐ -->
+<div id="visitorCounter" style="
+  background: rgba(0,0,0,0.6);
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  font-size: 1.2rem;
+  margin: 20px auto;
+  width: fit-content;
+  box-shadow: 0 0 10px #fff;
+">
+  Visitor Count: loading...
+</div>
 
-  <!-- ⭐ VISITOR COUNTER ⭐ -->
-  <div id="visitorCounter" style="
-    background: rgba(0,0,0,0.6);
-    padding: 10px 15px;
-    border-radius: 10px;
-    border: 2px solid #fff;
-    font-size: 1.2rem;
-    margin: 20px auto;
-    width: fit-content;
-    box-shadow: 0 0 10px #fff;
-  ">
-    Visitor Count: loading...
+<div class="container">
+  <h2>🔥 Legendary Memes 🔥</h2>
+  <ul>
+    <li><a href="memes/doge.html">🐶 Doge</a></li>
+    <li><a href="memes/rickroll.html">🎵 Rickroll</a></li>
+    <li><a href="quiz.html">🧠 Meme Personality Quiz</a></li>
+  </ul>
+</div>
+
+<!-- ⭐ MEME FEED SECTION ⭐ -->
+<div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
+
+  <!-- POST BOX -->
+  <div id="postBox" style="background:#fff; border:3px solid #000; padding:20px; border-radius:15px;">
+    <h2 style="color:#000; text-align:center;">Create a Post</h2>
+
+    <textarea id="postText"
+      placeholder="Type your meme here..."
+      style="width:100%; height:120px; padding:10px; font-size:16px; border:2px solid #000; border-radius:10px; resize:none;"></textarea>
+
+    <button id="postButton"
+      style="margin-top:10px; width:100%; padding:12px; background:#00ccff; border:3px solid #000; border-radius:10px; font-size:20px; cursor:pointer;">
+      Post
+    </button>
+
+    <p id="postStatus" style="text-align:center; margin-top:10px; color:#000;"></p>
   </div>
 
-  <div class="container">
-    <h2>🔥 Legendary Memes 🔥</h2>
-    <ul>
-      <li><a href="memes/doge.html">🐶 Doge</a></li>
-      <li><a href="memes/rickroll.html">🎵 Rickroll</a></li>
-      <li><a href="quiz.html">🧠 Meme Personality Quiz</a></li>
-    </ul>
-  </div>
+  <!-- FEED POSTS -->
+  <div id="feed" style="margin-top:30px;"></div>
 
-  <h2 style="margin-top:40px;">📜 Classic Meme Timeline (2005–2014) 📜</h2>
+</div>
+<h2 style="margin-top:40px;">📜 Classic Meme Timeline (2005–2014) 📜</h2>
 
-  <div class="timeline"></div>
+<div class="timeline"></div>
 
-  <footer>
-    Created by <strong>Manper</strong> — Est. 2026 🌀
-    <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
-  </footer>
-
+<footer>
+  Created by <strong>Manper</strong> — Est. 2026 🌀
+  <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
+</footer>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
 import { 
@@ -273,9 +288,14 @@ import {
   doc,
   getDoc,
   setDoc,
-  updateDoc
+  updateDoc,
+  serverTimestamp,
+  collection,
+  query,
+  where,
+  orderBy,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
   authDomain: "meme-encyclopedia.firebaseapp.com",
@@ -295,7 +315,7 @@ const loginBtn = document.getElementById("loginBtn");
 const signupBtn = document.getElementById("signupBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const welcomeBox = document.getElementById("welcomeBox");
-
+// ⭐ SIGNUP
 signupBtn.onclick = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value)
     .then(async (cred) => {
@@ -314,16 +334,17 @@ signupBtn.onclick = () => {
     .catch(err => alert(err.message));
 };
 
+// ⭐ LOGIN
 loginBtn.onclick = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
     .catch(err => alert(err.message));
 };
 
+// ⭐ LOGOUT
 logoutBtn.onclick = () => {
   signOut(auth);
 };
-
-// ⭐ UNIQUE VISITOR COUNTER ⭐
+// ⭐ VISITOR COUNTER
 async function updateVisitorCounter(user) {
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
@@ -346,6 +367,66 @@ async function updateVisitorCounter(user) {
     "Visitor Count: " + visits;
 }
 
+// ⭐ COINS
+async function updateCoinDisplay(user) {
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
+  document.getElementById("coinDisplay").innerText =
+    "Coins: " + snap.data().coins;
+}
+
+async function autoAddCoin(user) {
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
+  const coins = snap.data().coins;
+
+  await updateDoc(userRef, { coins: coins + 1 });
+  updateCoinDisplay(user);
+}
+// ⭐ AI MODERATION
+function aiModerate(text) {
+  const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent"];
+  for (let w of badWords) {
+    if (text.toLowerCase().includes(w)) {
+      return { safe:false, reason:"Blocked word: " + w };
+    }
+  }
+  return { safe:true };
+}
+
+// ⭐ LOAD FEED
+async function loadFeed() {
+  const feedDiv = document.getElementById("feed");
+  feedDiv.innerHTML = "<p style='text-align:center;color:#fff;'>Loading feed...</p>";
+
+  const q = query(
+    collection(db, "posts"),
+    where("approved", "==", true),
+    orderBy("timestamp", "desc")
+  );
+
+  const snap = await getDocs(q);
+  feedDiv.innerHTML = "";
+
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
+
+    const postEl = document.createElement("div");
+    postEl.style = "background:#fff; border:3px solid #000; padding:15px; border-radius:10px; margin-bottom:20px;";
+
+    postEl.innerHTML = `
+      <div style="display:flex; align-items:center;">
+        <img src="${data.pfpURL}" style="width:50px;height:50px;border-radius:50%;border:2px solid #000;margin-right:10px;">
+        <strong>${data.username}</strong>
+      </div>
+      <p style="margin-top:10px;color:#000;">${data.text}</p>
+      <small style="color:#000;">${data.timestamp?.toDate()}</small>
+    `;
+
+    feedDiv.appendChild(postEl);
+  });
+}
+// ⭐ AUTH + FEED
 onAuthStateChanged(auth, async user => {
   if (user) {
     welcomeBox.innerHTML = "Welcome, " + user.email + "!";
@@ -371,6 +452,46 @@ onAuthStateChanged(auth, async user => {
 
     document.getElementById("profileButton").style.display = "block";
 
+    // ⭐ FEED POSTING
+    const postButton = document.getElementById("postButton");
+    const postText = document.getElementById("postText");
+    const postStatus = document.getElementById("postStatus");
+
+    postButton.onclick = async () => {
+      const text = postText.value.trim();
+      if (text.length === 0) {
+        postStatus.innerText = "Post cannot be empty.";
+        return;
+      }
+
+      const mod = aiModerate(text);
+      if (!mod.safe) {
+        postStatus.innerText = "Post blocked: " + mod.reason;
+        return;
+      }
+
+      postStatus.innerText = "Posting...";
+
+      const postID = crypto.randomUUID();
+      await setDoc(doc(db, "posts", postID), {
+        userID: user.uid,
+        username: user.email,
+        pfpURL: "",
+        text: text,
+        timestamp: serverTimestamp(),
+        approved: true,
+        flagged: false,
+        reason: "",
+        expiresAt: new Date(Date.now() + 30*24*60*60*1000)
+      });
+
+      postStatus.innerText = "Posted!";
+      postText.value = "";
+      loadFeed();
+    };
+
+    loadFeed();
+
     setInterval(() => {
       if (auth.currentUser) {
         autoAddCoin(auth.currentUser);
@@ -389,22 +510,6 @@ onAuthStateChanged(auth, async user => {
       "Visitor Count: " + snap.data().visits;
   }
 });
-
-async function updateCoinDisplay(user) {
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
-  document.getElementById("coinDisplay").innerText =
-    "Coins: " + snap.data().coins;
-}
-
-async function autoAddCoin(user) {
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
-  const coins = snap.data().coins;
-
-  await updateDoc(userRef, { coins: coins + 1 });
-  updateCoinDisplay(user);
-}
 </script>
 </body>
 </html>
