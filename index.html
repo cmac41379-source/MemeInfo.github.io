@@ -74,31 +74,6 @@
       text-shadow: 0 0 10px #0f0;
     }
 
-    /* COIN BOX */
-    #coinBox {
-      background: rgba(0,0,0,0.5);
-      border: 3px solid #fff;
-      width: 80%;
-      margin: 20px auto;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px #fff;
-    }
-
-    #coinBox button {
-      background: linear-gradient(90deg, #ff00ff, #00ffff);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    #coinBox button:hover {
-      transform: scale(1.1);
-    }
-
     .banner {
       background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
       padding: 10px;
@@ -217,6 +192,22 @@
 </head>
 
 <body>
+
+  <!-- ⭐ TOP‑LEFT COIN DISPLAY ⭐ -->
+  <div id="coinDisplay" style="
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.6);
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    font-size: 1.2rem;
+    z-index: 9999;
+  ">
+    Coins: 0
+  </div>
+
   <header>
     <h1>✨ THE MEME ENCYCLOPEDIA ✨</h1>
     <p><strong>Welcome, traveler of the internet!</strong></p>
@@ -236,13 +227,6 @@
     <button id="logoutBtn" style="display:none;">Logout</button>
 
     <div id="welcomeBox"></div>
-  </div>
-
-  <!-- ⭐ COIN SYSTEM BOX ⭐ -->
-  <div id="coinBox">
-    <h2>💰 Your Coins 💰</h2>
-    <div id="coinDisplay">Coins: 0</div>
-    <button id="addCoinBtn">+1 Coin</button>
   </div>
 
   <div class="banner">
@@ -269,7 +253,7 @@
     <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
   </footer>
 
-  <!-- ⭐ FIREBASE + AUTH + COINS ⭐ -->
+  <!-- ⭐ FIREBASE + AUTH + AUTO COINS ⭐ -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
     import { 
@@ -339,6 +323,14 @@
         }
 
         updateCoinDisplay(user);
+
+        // ⭐ AUTO‑EARN 1 COIN EVERY 5 MINUTES
+        setInterval(() => {
+          if (auth.currentUser) {
+            autoAddCoin(auth.currentUser);
+          }
+        }, 300000); // 300,000 ms = 5 minutes
+
       } else {
         welcomeBox.innerHTML = "";
         logoutBtn.style.display = "none";
@@ -353,7 +345,7 @@
         "Coins: " + snap.data().coins;
     }
 
-    async function addCoin(user) {
+    async function autoAddCoin(user) {
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
       const coins = snap.data().coins;
@@ -361,14 +353,6 @@
       await updateDoc(userRef, { coins: coins + 1 });
       updateCoinDisplay(user);
     }
-
-    document.getElementById("addCoinBtn").addEventListener("click", () => {
-      if (auth.currentUser) {
-        addCoin(auth.currentUser);
-      } else {
-        alert("You must be logged in to earn coins.");
-      }
-    });
   </script>
 
 </body>
