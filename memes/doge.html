@@ -3,23 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doge Meme</title>
+  <title>Doge Meme Info</title>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffcc00, #ff66ff);
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
+      padding: 20px;
+      border-bottom: 4px solid #fff;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #fff; }
+      to { box-shadow: 0 0 30px #ff0; }
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-shadow: 2px 2px 10px #000;
+      margin: 0;
+    }
+
+    /* MOVING BANNER */
+    .banner {
+      background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
+      padding: 10px;
+      font-weight: bold;
+      border: 3px solid #fff;
+      margin: 20px auto;
+      width: 80%;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .banner span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: bannerScroll 8s linear infinite;
+    }
+
+    @keyframes bannerScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 3px solid #fff;
+      margin: 20px auto;
+      width: 80%;
+      padding: 20px;
+      box-shadow: 0 0 20px #fff;
+    }
+
+    .doge-img {
+      width: 250px;
+      border: 5px solid #fff;
+      box-shadow: 0 0 20px #ff0;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .wow {
+      font-size: 1.5rem;
+      margin: 10px 0;
+      text-shadow: 0 0 10px #000;
+    }
+
+    a {
+      color: #0ff;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      background: #000;
+      color: #0f0;
+      padding: 10px;
+      font-size: 1rem;
+      border-top: 3px solid #fff;
+      text-shadow: 0 0 10px #0f0;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Doge</h1>
+  <header>
+    <h1>🐶 DOGE MEME INFO 🐶</h1>
+  </header>
 
-  <img src="../OIP (25).webp" alt="Doge Meme" style="width:300px;">
+  <div class="banner">
+    <span>✨ MUCH WOW ✨ VERY MEME ✨ SUCH HISTORY ✨</span>
+  </div>
 
-  <p><strong>Origin:</strong> 2010</p>
+  <div class="container">
+    <img class="doge-img" src="https://i.imgur.com/3ZQ3Z4P.png" alt="Doge">
 
-  <p>
-    Doge originated in 2010 when a Japanese kindergarten teacher posted photos of her Shiba Inu, Kabosu, online. 
-    The dog’s quirky, side‑eye expression quickly spread across forums like Reddit and Tumblr. 
-    By 2013, the image evolved into the iconic meme style using colorful Comic Sans text expressing exaggerated inner thoughts 
-    (“much wow,” “very doge”). It became popular because the expression was funny, relatable, and easy to remix, 
-    turning Doge into one of the most recognizable internet memes ever.
-  </p>
+    <div class="wow">wow.</div>
+    <div class="wow">such legendary meme.</div>
+    <div class="wow">very internet history.</div>
+    <div class="wow">so iconic.</div>
 
-  <p><a href="../index.html">Back to Home</a></p>
+    <h2>📜 About Doge</h2>
+    <p>
+      Doge is one of the most iconic memes of all time, originating from a picture of a Shiba Inu named Kabosu.
+      The meme became famous for its colorful Comic Sans captions like “wow”, “such meme”, “very doge”.
+    </p>
+
+    <h2>📅 First Appearance</h2>
+    <p>2010 — and it exploded in popularity around 2013.</p>
+
+    <h2>🔗 Return to Home</h2>
+    <p><a href="../index.html">Back to Meme Encyclopedia</a></p>
+  </div>
+
+  <footer>
+    Doge Page by <strong>Manper</strong>  
+    <br>✨ Inspired by the NOGGIN CLONTITH ✨
+  </footer>
 </body>
 </html>
