@@ -208,6 +208,24 @@
     Coins: 0
   </div>
 
+  <!-- ⭐ PROFILE BUTTON TOP‑RIGHT ⭐ -->
+  <div id="profileButton" style="
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    font-size: 1.2rem;
+    z-index: 9999;
+    display:none;
+  ">
+    <a href="profile.html" style="color:#0ff; text-decoration:none; font-weight:bold;">
+      My Profile
+    </a>
+  </div>
+
   <header>
     <h1>✨ THE MEME ENCYCLOPEDIA ✨</h1>
     <p><strong>Welcome, traveler of the internet!</strong></p>
@@ -330,6 +348,9 @@
 
         updateCoinDisplay(user);
 
+        // ⭐ SHOW PROFILE BUTTON WHEN LOGGED IN
+        document.getElementById("profileButton").style.display = "block";
+
         // ⭐ AUTO‑EARN 1 COIN EVERY 5 MINUTES
         setInterval(() => {
           if (auth.currentUser) {
@@ -341,6 +362,7 @@
         welcomeBox.innerHTML = "";
         logoutBtn.style.display = "none";
         document.getElementById("coinDisplay").innerText = "Coins: 0";
+        document.getElementById("profileButton").style.display = "none";
       }
     });
 
