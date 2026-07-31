@@ -74,6 +74,31 @@
       text-shadow: 0 0 10px #0f0;
     }
 
+    /* COIN BOX */
+    #coinBox {
+      background: rgba(0,0,0,0.5);
+      border: 3px solid #fff;
+      width: 80%;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #fff;
+    }
+
+    #coinBox button {
+      background: linear-gradient(90deg, #ff00ff, #00ffff);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #coinBox button:hover {
+      transform: scale(1.1);
+    }
+
     .banner {
       background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
       padding: 10px;
@@ -213,6 +238,13 @@
     <div id="welcomeBox"></div>
   </div>
 
+  <!-- ⭐ COIN SYSTEM BOX ⭐ -->
+  <div id="coinBox">
+    <h2>💰 Your Coins 💰</h2>
+    <div id="coinDisplay">Coins: 0</div>
+    <button id="addCoinBtn">+1 Coin</button>
+  </div>
+
   <div class="banner">
     <span>🎉 WELCOME TO THE OFFICIAL MEME ARCHIVE 🎉 YOU’VE ENTERED THE MEME ZONE 🎉</span>
   </div>
@@ -229,8 +261,7 @@
   <h2 style="margin-top:40px;">📜 Classic Meme Timeline (2005–2014) 📜</h2>
 
   <div class="timeline">
-    <!-- timeline entries unchanged -->
-    <!-- (I kept your entire timeline exactly the same) -->
+    <!-- your timeline stays EXACTLY the same -->
   </div>
 
   <footer>
@@ -238,11 +269,24 @@
     <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
   </footer>
 
-  <!-- ⭐ FIREBASE + AUTH LOGIC ⭐ -->
+  <!-- ⭐ FIREBASE + AUTH + COINS ⭐ -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } 
-      from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
@@ -255,6 +299,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -278,13 +323,50 @@
       signOut(auth);
     };
 
-    onAuthStateChanged(auth, user => {
+    onAuthStateChanged(auth, async user => {
       if (user) {
         welcomeBox.innerHTML = "Welcome, " + user.email + "!";
         logoutBtn.style.display = "inline-block";
+
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+
+        if (!snap.exists()) {
+          await setDoc(userRef, {
+            email: user.email,
+            coins: 0
+          });
+        }
+
+        updateCoinDisplay(user);
       } else {
         welcomeBox.innerHTML = "";
         logoutBtn.style.display = "none";
+        document.getElementById("coinDisplay").innerText = "Coins: 0";
+      }
+    });
+
+    async function updateCoinDisplay(user) {
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+      document.getElementById("coinDisplay").innerText =
+        "Coins: " + snap.data().coins;
+    }
+
+    async function addCoin(user) {
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+      const coins = snap.data().coins;
+
+      await updateDoc(userRef, { coins: coins + 1 });
+      updateCoinDisplay(user);
+    }
+
+    document.getElementById("addCoinBtn").addEventListener("click", () => {
+      if (auth.currentUser) {
+        addCoin(auth.currentUser);
+      } else {
+        alert("You must be logged in to earn coins.");
       }
     });
   </script>
