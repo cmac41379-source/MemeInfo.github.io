@@ -1,96 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Profile</title>
+
   <style>
     body {
-      background: #222;
+      background: linear-gradient(135deg, #00ff00, #ff00ff, #0000ff);
+      font-family: "Comic Sans MS", cursive, sans-serif;
       color: #fff;
-      font-family: Arial;
       text-align: center;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
     }
-    input, textarea {
+
+    header {
+      background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
+      padding: 20px;
+      border-bottom: 4px solid #fff;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #fff; }
+      to { box-shadow: 0 0 30px #ff0; }
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-shadow: 2px 2px 10px #000;
+      margin: 0;
+    }
+
+    .settingsBox {
+      background: rgba(0,0,0,0.5);
+      border: 3px solid #fff;
       width: 80%;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #fff;
+      text-align: left;
+    }
+
+    input {
+      width: 90%;
       padding: 10px;
-      margin: 10px;
+      margin: 10px 0;
       border-radius: 10px;
       border: none;
       font-size: 1rem;
     }
+
     button {
+      background: linear-gradient(90deg, #ff00ff, #00ffff);
+      border: none;
       padding: 10px 20px;
       border-radius: 10px;
-      border: none;
-      background: #0ff;
       font-weight: bold;
       cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    a {
+      color: #0ff;
+      font-weight: bold;
+      text-decoration: none;
     }
   </style>
 </head>
+
 <body>
 
-  <h1>Edit Profile</h1>
+<header>
+  <h1>⚙ Edit Profile</h1>
+</header>
 
-  <input id="username" placeholder="Username">
-  <textarea id="bio" placeholder="Bio"></textarea>
-  <input id="pfp" placeholder="Profile Picture URL">
+<div class="settingsBox">
+  <label>Username:</label>
+  <input id="username" type="text">
+
+  <label>Bio:</label>
+  <input id="bio" type="text">
+
+  <label>Profile Picture URL:</label>
+  <input id="pfp" type="text">
 
   <button id="saveBtn">Save Changes</button>
 
   <br><br>
-  <a href="profile.html" style="color:#0ff;">Back to Profile</a>
+  <a href="profile.html">⬅ Back to Profile</a>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc,
-      updateDoc
-    } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
-      authDomain: "meme-encyclopedia.firebaseapp.com",
-      projectId: "meme-encyclopedia",
-      storageBucket: "meme-encyclopedia.firebasestorage.app",
-      messagingSenderId: "496237997014",
-      appId: "1:496237997014:web:382e628a4da83219ced277"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+    authDomain: "meme-encyclopedia.firebaseapp.com",
+    projectId: "meme-encyclopedia",
+    storageBucket: "meme-encyclopedia.firebasestorage.app",
+    messagingSenderId: "496237997014",
+    appId: "1:496237997014:web:382e628a4da83219ced277"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    let userRef;
+  let userRef;
 
-    onAuthStateChanged(auth, async user => {
-      if (!user) {
-        window.location.href = "index.html";
-        return;
-      }
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
 
-      userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
-      const data = snap.data();
+    userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+    const data = snap.data();
 
-      document.getElementById("username").value = data.username || "";
-      document.getElementById("bio").value = data.bio || "";
-      document.getElementById("pfp").value = data.pfp || "";
+    document.getElementById("username").value = data.username || "";
+    document.getElementById("bio").value = data.bio || "";
+    document.getElementById("pfp").value = data.pfp || "";
+  });
+
+  document.getElementById("saveBtn").onclick = async () => {
+    await updateDoc(userRef, {
+      username: document.getElementById("username").value,
+      bio: document.getElementById("bio").value,
+      pfp: document.getElementById("pfp").value
     });
 
-    document.getElementById("saveBtn").onclick = async () => {
-      await updateDoc(userRef, {
-        username: document.getElementById("username").value,
-        bio: document.getElementById("bio").value,
-        pfp: document.getElementById("pfp").value
-      });
-
-      alert("Profile updated!");
-    };
-  </script>
+    alert("Profile updated!");
+  };
+</script>
 
 </body>
 </html>
