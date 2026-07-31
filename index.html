@@ -92,6 +92,48 @@
       box-shadow: 0 0 20px #ff0;
     }
 
+    /* TIMELINE STYLES */
+    .timeline {
+      width: 80%;
+      margin: 40px auto;
+      border-left: 5px solid #fff;
+      padding-left: 20px;
+      box-shadow: 0 0 20px #fff;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .entry {
+      margin: 30px 0;
+      position: relative;
+    }
+
+    .entry::before {
+      content: "";
+      width: 20px;
+      height: 20px;
+      background: #ff0;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      position: absolute;
+      left: -33px;
+      top: 5px;
+      box-shadow: 0 0 10px #ff0;
+    }
+
+    .year {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ff0;
+      text-shadow: 0 0 10px #ff0;
+    }
+
+    .desc {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+
     footer {
       background: #000;
       color: #0f0;
@@ -125,8 +167,95 @@
     <ul>
       <li><a href="memes/doge.html">🐶 Doge</a></li>
       <li><a href="memes/rickroll.html">🎵 Rickroll</a></li>
-      <li><a href="quiz.html" style="background:linear-gradient(90deg,#ff00ff,#00ffff);color:#000;padding:10px 20px;border-radius:10px;text-decoration:none;font-weight:bold;box-shadow:0 0 10px #fff;transition:0.2s;">🧠 Meme Personality Quiz</a></li>
+      <li><a href="quiz.html">🧠 Meme Personality Quiz</a></li>
     </ul>
+  </div>
+
+  <!-- ⭐ TIMELINE DIRECTLY BELOW BUTTONS ⭐ -->
+  <h2 style="margin-top:40px;">📜 Classic Meme Timeline (2005–2014) 📜</h2>
+
+  <div class="timeline">
+
+    <div class="entry">
+      <div class="year">2005 — Pepe the Frog</div>
+      <div class="desc">
+        Pepe first appeared in Matt Furie’s comic *Boy’s Club*.<br>
+        Not a meme yet — just “feels good man.”
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="year">2006–2007 — LOLcats / I Can Has Cheezburger?</div>
+      <div class="desc">
+        Early cat memes circulated in 2006.<br>
+        The big boom happened in 2007 with *I Can Has Cheezburger?*
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="year">2007 — Rickroll & Keyboard Cat</div>
+      <div class="desc">
+        Rickroll becomes a massive prank trend.<br>
+        Keyboard Cat goes viral after being uploaded in 2007.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="year">2008 — Trollface / Rage Comics Begin</div>
+      <div class="desc">
+        Trollface posted on DeviantArt in 2008.<br>
+        Rage comics explode: Rage Guy, Forever Alone, Me Gusta.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="year">2006–2009 — Advice Animals</div>
+      <div class="desc">
+        Advice Dog appears in 2006.<br>
+        Format explodes in 2009: Philosoraptor, Courage Wolf, SAP, Foul Bachelor Frog.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="year">2010 — Rage Comics Peak</div>
+      <div class="desc">
+        Rage comics dominate the internet.<br>
+        Forever Alone & Me Gusta become iconic.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="year">2011 — Nyan Cat</div>
+      <div class="desc">
+        Uploaded April 2011.<br>
+        One of the most iconic looping memes ever.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="year">2012 — Bad Luck Brian</div>
+      <div class="desc">
+        Kyle Craven’s school photo becomes legendary.<br>
+        The king of unlucky memes.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="year">2013 — Doge</div>
+      <div class="desc">
+        Kabosu’s photo becomes a meme in late 2013.<br>
+        “Much wow. Very doge.”
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="year">2014 — This Is Fine Dog</div>
+      <div class="desc">
+        KC Green’s comic becomes a meme in 2014.<br>
+        Symbol of calm disaster.
+      </div>
+    </div>
+
   </div>
 
   <footer>
