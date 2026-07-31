@@ -34,6 +34,7 @@
       margin: 0;
     }
 
+    /* MOVING GNOME-STYLE BANNER */
     .banner {
       background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
       padding: 10px;
@@ -41,12 +42,20 @@
       border: 3px solid #fff;
       margin: 20px auto;
       width: 80%;
-      animation: rainbow 5s linear infinite;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
     }
 
-    @keyframes rainbow {
-      0% { filter: hue-rotate(0deg); }
-      100% { filter: hue-rotate(360deg); }
+    .banner span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: bannerScroll 8s linear infinite;
+    }
+
+    @keyframes bannerScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
     }
 
     .container {
@@ -91,6 +100,13 @@
       border-top: 3px solid #fff;
       text-shadow: 0 0 10px #0f0;
     }
+
+    .inspired {
+      font-size: 0.9rem;
+      color: #ff0;
+      text-shadow: 0 0 5px #ff0;
+      margin-top: 5px;
+    }
   </style>
 </head>
 
@@ -101,7 +117,7 @@
   </header>
 
   <div class="banner">
-    🎉 WELCOME TO THE OFFICIAL MEME ARCHIVE 🎉 YOU’VE ENTERED THE MEME ZONE 🎉
+    <span>🎉 WELCOME TO THE OFFICIAL MEME ARCHIVE 🎉 YOU’VE ENTERED THE MEME ZONE 🎉</span>
   </div>
 
   <div class="container">
@@ -113,7 +129,7 @@
 
   <footer>
     Created by <strong>Manper</strong> — Est. 2026 🌀
+    <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
   </footer>
 </body>
 </html>
-
