@@ -242,6 +242,10 @@
 
     <button id="loginBtn">Login</button>
     <button id="signupBtn">Sign Up</button>
+
+    <!-- ⭐ NEW: Forgot Password Button ⭐ -->
+    <button id="resetBtn">Forgot Password?</button>
+
     <button id="logoutBtn" style="display:none;">Logout</button>
 
     <div id="welcomeBox"></div>
@@ -281,7 +285,8 @@
       createUserWithEmailAndPassword, 
       signInWithEmailAndPassword, 
       signOut, 
-      onAuthStateChanged 
+      onAuthStateChanged,
+      sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
     import {
@@ -327,6 +332,23 @@
       signOut(auth);
     };
 
+    // ⭐ Forgot Password Feature
+    document.getElementById("resetBtn").onclick = async () => {
+      const emailInput = prompt("Enter your email to reset your password:");
+
+      if (!emailInput) {
+        alert("Password reset canceled.");
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, emailInput);
+        alert("Password reset email sent! Check your inbox.");
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    };
+
     onAuthStateChanged(auth, async user => {
       if (user) {
         welcomeBox.innerHTML = "Welcome, " + user.email + "!";
@@ -348,10 +370,8 @@
 
         updateCoinDisplay(user);
 
-        // ⭐ SHOW PROFILE BUTTON WHEN LOGGED IN
         document.getElementById("profileButton").style.display = "block";
 
-        // ⭐ AUTO‑EARN 1 COIN EVERY 5 MINUTES
         setInterval(() => {
           if (auth.currentUser) {
             autoAddCoin(auth.currentUser);
