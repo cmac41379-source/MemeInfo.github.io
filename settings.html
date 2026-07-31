@@ -67,6 +67,25 @@
       transform: scale(1.1);
     }
 
+    /* ⭐ BIG DELETE BUTTON ⭐ */
+    #deleteBtn {
+      background: red;
+      color: white;
+      font-size: 1.4rem;
+      padding: 15px 25px;
+      border-radius: 15px;
+      border: 4px solid #fff;
+      box-shadow: 0 0 20px #ff0000;
+      margin-top: 30px;
+      width: 95%;
+      text-align: center;
+    }
+
+    #deleteBtn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 30px #ff4444;
+    }
+
     a {
       color: #0ff;
       font-weight: bold;
@@ -93,6 +112,9 @@
 
   <button id="saveBtn">Save Changes</button>
 
+  <!-- ⭐ BIG DELETE ACCOUNT BUTTON ⭐ -->
+  <button id="deleteBtn">DELETE ACCOUNT</button>
+
   <br><br>
   <a href="profile.html">⬅ Back to Profile</a>
 </div>
@@ -104,7 +126,8 @@
     getFirestore,
     doc,
     getDoc,
-    updateDoc
+    updateDoc,
+    deleteDoc
   } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -145,6 +168,24 @@
     });
 
     alert("Profile updated!");
+  };
+
+  // ⭐ DELETE ACCOUNT FUNCTION ⭐
+  document.getElementById("deleteBtn").onclick = async () => {
+    if (!confirm("Are you ABSOLUTELY sure you want to delete your account? This cannot be undone.")) {
+      return;
+    }
+
+    const user = auth.currentUser;
+
+    // Delete Firestore document
+    await deleteDoc(userRef);
+
+    // Delete Auth account
+    await user.delete();
+
+    alert("Your account has been permanently deleted.");
+    window.location.href = "index.html";
   };
 </script>
 
