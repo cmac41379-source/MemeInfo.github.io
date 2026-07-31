@@ -1,94 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Your Profile</title>
+
   <style>
     body {
-      background: #111;
+      background: linear-gradient(135deg, #00ff00, #ff00ff, #0000ff);
+      font-family: "Comic Sans MS", cursive, sans-serif;
       color: #fff;
-      font-family: Arial;
       text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
       padding: 20px;
+      border-bottom: 4px solid #fff;
+      animation: glow 2s infinite alternate;
     }
-    #pfp {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #fff; }
+      to { box-shadow: 0 0 30px #ff0; }
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-shadow: 2px 2px 10px #000;
+      margin: 0;
+    }
+
+    .profileBox {
+      background: rgba(0,0,0,0.5);
       border: 3px solid #fff;
-      object-fit: cover;
-      margin-bottom: 20px;
-    }
-    #box {
-      background: rgba(255,255,255,0.1);
+      width: 80%;
+      margin: 20px auto;
       padding: 20px;
       border-radius: 10px;
-      width: 80%;
-      margin: auto;
+      box-shadow: 0 0 20px #fff;
+      text-align: left;
     }
+
+    .profileBox img {
+      width: 150px;
+      height: 150px;
+      border-radius: 10px;
+      border: 3px solid #fff;
+      box-shadow: 0 0 20px #ff0;
+      margin-bottom: 20px;
+    }
+
     a {
       color: #0ff;
       font-weight: bold;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-shadow: 0 0 10px #fff;
     }
   </style>
 </head>
+
 <body>
 
-  <h1>Your Profile</h1>
+<header>
+  <h1>👤 Your Profile</h1>
+</header>
 
+<div class="profileBox">
   <img id="pfp" src="" alt="Profile Picture">
 
-  <div id="box">
-    <h2 id="username">Username</h2>
-    <p id="email">Email: loading...</p>
-    <p id="bio">Bio: loading...</p>
-    <p id="coins">Coins: loading...</p>
-    <p id="joined">Joined: loading...</p>
-  </div>
+  <p id="username" style="font-size:1.5rem; font-weight:bold;"></p>
+  <p id="email"></p>
+  <p id="bio"></p>
+  <p id="coins"></p>
+  <p id="joined"></p>
 
   <br>
-  <a href="settings.html">Edit Profile</a>
+  <a href="settings.html">⚙ Edit Profile</a>
+  <br><br>
+  <a href="index.html">🏠 Back to Home</a>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
-      authDomain: "meme-encyclopedia.firebaseapp.com",
-      projectId: "meme-encyclopedia",
-      storageBucket: "meme-encyclopedia.firebasestorage.app",
-      messagingSenderId: "496237997014",
-      appId: "1:496237997014:web:382e628a4da83219ced277"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+    authDomain: "meme-encyclopedia.firebaseapp.com",
+    projectId: "meme-encyclopedia",
+    storageBucket: "meme-encyclopedia.firebasestorage.app",
+    messagingSenderId: "496237997014",
+    appId: "1:496237997014:web:382e628a4da83219ced277"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    onAuthStateChanged(auth, async user => {
-      if (!user) {
-        window.location.href = "index.html";
-        return;
-      }
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
 
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
-      const data = snap.data();
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+    const data = snap.data();
 
-      document.getElementById("username").innerText = data.username || "No username set";
-      document.getElementById("email").innerText = "Email: " + user.email;
-      document.getElementById("bio").innerText = "Bio: " + (data.bio || "No bio yet");
-      document.getElementById("coins").innerText = "Coins: " + data.coins;
-      document.getElementById("joined").innerText = "Joined: " + (data.joined || "Unknown");
+    document.getElementById("username").innerText = "Username: " + (data.username || "Not set");
+    document.getElementById("email").innerText = "Email: " + user.email;
+    document.getElementById("bio").innerText = "Bio: " + (data.bio || "No bio yet");
+    document.getElementById("coins").innerText = "Coins: " + data.coins;
+    document.getElementById("joined").innerText = "Joined: " + (data.joined || "Unknown");
 
-      document.getElementById("pfp").src = data.pfp || "https://i.imgur.com/4ZQZ4ZQ.png";
-    });
-  </script>
+    document.getElementById("pfp").src = data.pfp || "https://i.imgur.com/4ZQZ4ZQ.png";
+  });
+</script>
 
 </body>
 </html>
