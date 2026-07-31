@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Profile</title>
+  <style>
+    body {
+      background: #222;
+      color: #fff;
+      font-family: Arial;
+      text-align: center;
+      padding: 20px;
+    }
+    input, textarea {
+      width: 80%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      background: #0ff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Edit Profile</h1>
+
+  <input id="username" placeholder="Username">
+  <textarea id="bio" placeholder="Bio"></textarea>
+  <input id="pfp" placeholder="Profile Picture URL">
+
+  <button id="saveBtn">Save Changes</button>
+
+  <br><br>
+  <a href="profile.html" style="color:#0ff;">Back to Profile</a>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+      authDomain: "meme-encyclopedia.firebaseapp.com",
+      projectId: "meme-encyclopedia",
+      storageBucket: "meme-encyclopedia.firebasestorage.app",
+      messagingSenderId: "496237997014",
+      appId: "1:496237997014:web:382e628a4da83219ced277"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let userRef;
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+      const data = snap.data();
+
+      document.getElementById("username").value = data.username || "";
+      document.getElementById("bio").value = data.bio || "";
+      document.getElementById("pfp").value = data.pfp || "";
+    });
+
+    document.getElementById("saveBtn").onclick = async () => {
+      await updateDoc(userRef, {
+        username: document.getElementById("username").value,
+        bio: document.getElementById("bio").value,
+        pfp: document.getElementById("pfp").value
+      });
+
+      alert("Profile updated!");
+    };
+  </script>
+
+</body>
+</html>
