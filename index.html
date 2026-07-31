@@ -141,7 +141,8 @@
 
     <!-- Retro Visitor Counter -->
     <div class="counter-box">
-      👁️ Visitors: <span id="visits">Loading...</span>
+      👁️ Visitors:
+      <img src="https://simplecounter.ga/counter.php?uid=memeinfo123" alt="visitor counter">
     </div>
   </div>
 
@@ -149,28 +150,5 @@
     Created by <strong>Manper</strong> — Est. 2026 🌀
     <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
   </footer>
-
-  <script>
-    async function updateVisits() {
-      const namespace = "manper-meme-site";
-      const key = "visits";
-      const url = `https://api.countapi.xyz/get/${namespace}/${key}`;
-      const hitUrl = `https://api.countapi.xyz/hit/${namespace}/${key}`;
-
-      try {
-        let res = await fetch(url);
-        if (!res.ok) {
-          await fetch(`https://api.countapi.xyz/create?namespace=${namespace}&key=${key}&value=0`);
-        }
-        res = await fetch(hitUrl);
-        const data = await res.json();
-        document.getElementById("visits").innerText = data.value;
-      } catch (err) {
-        document.getElementById("visits").innerText = "Error";
-        console.error(err);
-      }
-    }
-    updateVisits();
-  </script>
 </body>
 </html>
