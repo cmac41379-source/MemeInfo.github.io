@@ -34,7 +34,6 @@
       margin: 0;
     }
 
-    /* LOGIN BOX */
     #authBox {
       background: rgba(0,0,0,0.5);
       border: 3px solid #fff;
@@ -193,7 +192,6 @@
 
 <body>
 
-  <!-- ⭐ FLOATING COIN DISPLAY ⭐ -->
   <div id="coinDisplay" style="
     position: fixed;
     top: 10px;
@@ -208,7 +206,6 @@
     Coins: 0
   </div>
 
-  <!-- ⭐ PROFILE BUTTON TOP‑RIGHT ⭐ -->
   <div id="profileButton" style="
     position: fixed;
     top: 10px;
@@ -231,7 +228,6 @@
     <p><strong>Welcome, traveler of the internet!</strong></p>
   </header>
 
-  <!-- ⭐ LOGIN + SIGNUP BOX ⭐ -->
   <div id="authBox">
     <h2>Login / Signup</h2>
 
@@ -243,8 +239,7 @@
     <button id="loginBtn">Login</button>
     <button id="signupBtn">Sign Up</button>
 
-    <!-- ⭐ NEW: Forgot Password Button ⭐ -->
-    <button id="resetBtn">Forgot Password?</button>
+    <!-- ❌ Forgot Password button removed -->
 
     <button id="logoutBtn" style="display:none;">Logout</button>
 
@@ -268,16 +263,13 @@
 
   <h2 style="margin-top:40px;">📜 Classic Meme Timeline (2005–2014) 📜</h2>
 
-  <div class="timeline">
-    <!-- your timeline stays EXACTLY the same -->
-  </div>
+  <div class="timeline"></div>
 
   <footer>
     Created by <strong>Manper</strong> — Est. 2026 🌀
     <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
   </footer>
 
-  <!-- ⭐ FIREBASE + AUTH + AUTO COINS + PROFILE FIELDS ⭐ -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
     import { 
@@ -285,8 +277,7 @@
       createUserWithEmailAndPassword, 
       signInWithEmailAndPassword, 
       signOut, 
-      onAuthStateChanged,
-      sendPasswordResetEmail
+      onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
     import {
@@ -330,23 +321,6 @@
 
     logoutBtn.onclick = () => {
       signOut(auth);
-    };
-
-    // ⭐ Forgot Password Feature
-    document.getElementById("resetBtn").onclick = async () => {
-      const emailInput = prompt("Enter your email to reset your password:");
-
-      if (!emailInput) {
-        alert("Password reset canceled.");
-        return;
-      }
-
-      try {
-        await sendPasswordResetEmail(auth, emailInput);
-        alert("Password reset email sent! Check your inbox.");
-      } catch (error) {
-        alert("Error: " + error.message);
-      }
     };
 
     onAuthStateChanged(auth, async user => {
