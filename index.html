@@ -14,23 +14,8 @@
     <li><a href="memes/doge.html">Doge</a></li>
   </ul>
 
-  <h3>Site Stats</h3>
-  <p>Total visits: <span id="visits">Loading...</span></p>
-
-  <script>
-    fetch("https://api.counterapi.dev/v1/meme-site/visits")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("visits").innerText = data.count;
-      })
-      .catch(() => {
-        document.getElementById("visits").innerText = "Error";
-      });
-  </script>
-
   <footer>
     <p>Created by <strong>Manper</strong></p>
   </footer>
 </body>
 </html>
-
