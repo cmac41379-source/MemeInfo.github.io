@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meme Encyclopedia</title>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Meme Encyclopedia</h1>
@@ -14,6 +13,18 @@
   <ul>
     <li><a href="memes/doge.html">Doge</a></li>
   </ul>
+
+  <h3>Site Stats</h3>
+  <p>Total visits: <span id="visits">Loading...</span></p>
+
+  <script>
+    async function updateVisits() {
+      const res = await fetch("https://api.countapi.xyz/hit/manper-meme-site/visits");
+      const data = await res.json();
+      document.getElementById("visits").innerText = data.value;
+    }
+    updateVisits();
+  </script>
 
   <footer>
     <p>Created by <strong>Manper</strong></p>
