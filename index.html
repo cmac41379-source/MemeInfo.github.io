@@ -92,7 +92,6 @@
       box-shadow: 0 0 20px #ff0;
     }
 
-    /* TIMELINE STYLES */
     .timeline {
       width: 80%;
       margin: 40px auto;
@@ -171,7 +170,6 @@
     </ul>
   </div>
 
-  <!-- ⭐ TIMELINE DIRECTLY BELOW BUTTONS ⭐ -->
   <h2 style="margin-top:40px;">📜 Classic Meme Timeline (2005–2014) 📜</h2>
 
   <div class="timeline">
@@ -262,5 +260,26 @@
     Created by <strong>Manper</strong> — Est. 2026 🌀
     <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
   </footer>
+
+  <!-- ⭐ FIREBASE CONNECTED BELOW ⭐ -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+      authDomain: "meme-encyclopedia.firebaseapp.com",
+      projectId: "meme-encyclopedia",
+      storageBucket: "meme-encyclopedia.firebasestorage.app",
+      messagingSenderId: "496237997014",
+      appId: "1:496237997014:web:382e628a4da83219ced277"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+  </script>
+
 </body>
 </html>
