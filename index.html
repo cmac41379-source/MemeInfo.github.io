@@ -368,7 +368,6 @@ loginBtn.onclick = () => {
 logoutBtn.onclick = () => {
   signOut(auth);
 };
-
 // ⭐ VISITOR COUNTER
 async function updateVisitorCounter(user) {
   const userRef = doc(db, "users", user.uid);
@@ -488,6 +487,13 @@ function loadFeedLive() {
 
         ${deleteButton}
 
+        <!-- ⭐ LIKE BUTTON ⭐ -->
+        <button class="likeBtn" data-id="${docSnap.id}"
+          style="margin-top:10px;background:#ffdd00;border:2px solid #000;
+                 padding:5px 10px;border-radius:8px;cursor:pointer;">
+          👍 Like (${data.likes?.length || 0})
+        </button>
+
         <!-- ⭐ COMMENT BOX ⭐ -->
         <div style="margin-top:15px;">
           <input type="text" class="commentInput" data-id="${docSnap.id}"
@@ -532,7 +538,7 @@ function loadFeedLive() {
         });
       });
     });
-    // ⭐ DELETE LOGIC
+// ⭐ DELETE LOGIC
     feedDiv.querySelectorAll(".deletePostBtn").forEach(btn => {
       btn.onclick = async () => {
         const id = btn.getAttribute("data-id");
@@ -559,6 +565,25 @@ function loadFeedLive() {
         input.value = "";
       };
     });
+
+    // ⭐ LIKE BUTTON LOGIC
+    feedDiv.querySelectorAll(".likeBtn").forEach(btn => {
+      btn.onclick = async () => {
+        const postID = btn.getAttribute("data-id");
+        const postRef = doc(db, "posts", postID);
+        const postSnap = await getDoc(postRef);
+        const postData = postSnap.data();
+
+        const userID = auth.currentUser.uid;
+
+        if (postData.likes && postData.likes.includes(userID)) return;
+
+        const newLikes = [...(postData.likes || []), userID];
+
+        await updateDoc(postRef, { likes: newLikes });
+      };
+    });
+
   });
 }
 
@@ -764,8 +789,8 @@ onAuthStateChanged(auth, async user => {
         approved: true,
         flagged: false,
         reason: "",
-        // ⭐ 1 WEEK EXPIRATION (UPDATED)
-        expiresAt: new Date(Date.now() + 7*24*60*60*1000)
+        expiresAt: new Date(Date.now() + 7*24*60*60*1000),
+        likes: [] // ⭐ NEW
       });
 
       postStatus.innerText = "Posted!";
