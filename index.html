@@ -267,10 +267,12 @@
 
     <textarea id="postText"
       placeholder="Type your meme here..."
-      style="width:100%; height:120px; padding:10px; font-size:16px; border:2px solid #000; border-radius:10px; resize:none;"></textarea>
+      style="width:100%; height:120px; padding:10px; font-size:16px; border:2px solid #000; border-radius:10px; resize:none;"
+      disabled></textarea> <!-- ⭐ DISABLED BY DEFAULT -->
 
     <button id="postButton"
-      style="margin-top:10px; width:100%; padding:12px; background:#00ccff; border:3px solid #000; border-radius:10px; font-size:20px; cursor:pointer;">
+      style="margin-top:10px; width:100%; padding:12px; background:#00ccff; border:3px solid #000; border-radius:10px; font-size:20px; cursor:pointer;"
+      disabled> <!-- ⭐ DISABLED BY DEFAULT -->
       Post
     </button>
 
@@ -376,6 +378,13 @@ async function updateVisitorCounter(user) {
   const counterRef = doc(db, "siteStats", "visitors");
   const counterSnap = await getDoc(counterRef);
 
+  // logged-out users DO NOT increase counter
+  if (!user) {
+    document.getElementById("visitorCounter").innerText =
+      "Visitor Count: " + counterSnap.data().visits;
+    return;
+  }
+
   if (userSnap.data().hasCountedVisit === true) {
     document.getElementById("visitorCounter").innerText =
       "Visitor Count: " + counterSnap.data().visits;
@@ -390,8 +399,14 @@ async function updateVisitorCounter(user) {
   document.getElementById("visitorCounter").innerText =
     "Visitor Count: " + visits;
 }
+
 // ⭐ COINS
 async function updateCoinDisplay(user) {
+  if (!user) {
+    document.getElementById("coinDisplay").innerText = "Coins: 0";
+    return;
+  }
+
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
   document.getElementById("coinDisplay").innerText =
@@ -399,6 +414,8 @@ async function updateCoinDisplay(user) {
 }
 
 async function autoAddCoin(user) {
+  if (!user) return; // logged-out users cannot earn coins
+
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
   const coins = snap.data().coins;
@@ -441,7 +458,6 @@ setInterval(deleteExpiredPosts, 3600000);
 // ⭐ LIVE FEED LOADER
 function loadFeedLive() {
   const feedDiv = document.getElementById("feed");
-  feedDiv.innerHTML = "<p style='text-align:center;color:#fff;'>Loading feed...</p>";
 
   const q = query(
     collection(db, "posts"),
@@ -449,6 +465,12 @@ function loadFeedLive() {
   );
 
   onSnapshot(q, (snap) => {
+    // auto-hide feed when logged out
+    if (!auth.currentUser) {
+      feedDiv.innerHTML = "<p style='color:#fff;'>Please log in to see the feed.</p>";
+      return;
+    }
+
     feedDiv.innerHTML = "";
 
     if (snap.empty) {
@@ -475,7 +497,7 @@ function loadFeedLive() {
         `;
       }
 
-      // ⭐ COMMENTS UI ADDED HERE ⭐
+      // ⭐ POST CONTENT + LIKE BUTTON + COMMENT BOX
       postEl.innerHTML = `
         <div style="display:flex; align-items:center;">
           <img src="${data.pfpURL || ''}" style="width:50px;height:50px;border-radius:50%;border:2px solid #000;margin-right:10px;">
@@ -538,54 +560,56 @@ function loadFeedLive() {
         });
       });
     });
-// ⭐ DELETE LOGIC
-    feedDiv.querySelectorAll(".deletePostBtn").forEach(btn => {
-      btn.onclick = async () => {
-        const id = btn.getAttribute("data-id");
-        await deleteDoc(doc(db, "posts", id));
-      };
-    });
-
-    // ⭐ COMMENT BUTTON LOGIC
-    feedDiv.querySelectorAll(".commentBtn").forEach(btn => {
-      btn.onclick = async () => {
-        const postID = btn.getAttribute("data-id");
-        const input = feedDiv.querySelector(`.commentInput[data-id="${postID}"]`);
-        const text = input.value.trim();
-
-        if (text.length === 0) return;
-
-        await setDoc(doc(collection(db, "posts", postID, "comments")), {
-          userID: auth.currentUser.uid,
-          username: auth.currentUser.email,
-          text: text,
-          timestamp: serverTimestamp()
-        });
-
-        input.value = "";
-      };
-    });
-
-    // ⭐ LIKE BUTTON LOGIC
-    feedDiv.querySelectorAll(".likeBtn").forEach(btn => {
-      btn.onclick = async () => {
-        const postID = btn.getAttribute("data-id");
-        const postRef = doc(db, "posts", postID);
-        const postSnap = await getDoc(postRef);
-        const postData = postSnap.data();
-
-        const userID = auth.currentUser.uid;
-
-        if (postData.likes && postData.likes.includes(userID)) return;
-
-        const newLikes = [...(postData.likes || []), userID];
-
-        await updateDoc(postRef, { likes: newLikes });
-      };
-    });
-
   });
 }
+<!-- ⭐ DELETE LOGIC -->
+<script type="module">
+feedDiv.querySelectorAll(".deletePostBtn").forEach(btn => {
+  btn.onclick = async () => {
+    const id = btn.getAttribute("data-id");
+    await deleteDoc(doc(db, "posts", id));
+  };
+});
+
+// ⭐ COMMENT BUTTON LOGIC
+feedDiv.querySelectorAll(".commentBtn").forEach(btn => {
+  btn.onclick = async () => {
+    const postID = btn.getAttribute("data-id");
+    const input = feedDiv.querySelector(`.commentInput[data-id="${postID}"]`);
+    const text = input.value.trim();
+
+    if (text.length === 0) return;
+
+    await setDoc(doc(collection(db, "posts", postID, "comments")), {
+      userID: auth.currentUser.uid,
+      username: auth.currentUser.email,
+      text: text,
+      timestamp: serverTimestamp()
+    });
+
+    input.value = "";
+  };
+});
+
+// ⭐ LIKE BUTTON LOGIC
+feedDiv.querySelectorAll(".likeBtn").forEach(btn => {
+  btn.onclick = async () => {
+    const postID = btn.getAttribute("data-id");
+    const postRef = doc(db, "posts", postID);
+    const postSnap = await getDoc(postRef);
+    const postData = postSnap.data();
+
+    const userID = auth.currentUser.uid;
+
+    if (postData.likes && postData.likes.includes(userID)) return;
+
+    const newLikes = [...(postData.likes || []), userID];
+
+    await updateDoc(postRef, { likes: newLikes });
+  };
+});
+
+});
 
 // ⭐ FRIEND REQUESTS
 async function renderFriendRequests(currentUserData, currentUserId) {
@@ -722,9 +746,11 @@ async function renderFriends(currentUserData) {
     box.appendChild(div);
   }
 }
+
 // ⭐ AUTH STATE
 onAuthStateChanged(auth, async user => {
   if (user) {
+    // ⭐ LOGGED IN
     welcomeBox.innerHTML = "Welcome, " + user.email + "!";
     logoutBtn.style.display = "inline-block";
 
@@ -758,6 +784,14 @@ onAuthStateChanged(auth, async user => {
     updateVisitorCounter(user);
 
     document.getElementById("profileButton").style.display = "block";
+
+    // ⭐ ENABLE POST BOX
+    document.getElementById("postText").disabled = false;
+    document.getElementById("postButton").disabled = false;
+
+    // ⭐ SHOW FRIEND UI
+    document.getElementById("friendRequestsBox").style.display = "block";
+    document.getElementById("friendsBox").style.display = "block";
 
     // ⭐ POSTING
     const postButton = document.getElementById("postButton");
@@ -812,15 +846,29 @@ onAuthStateChanged(auth, async user => {
     }, 300000);
 
   } else {
+    // ⭐ LOGGED OUT
     welcomeBox.innerHTML = "";
     logoutBtn.style.display = "none";
-    document.getElementById("coinDisplay").innerText = "Coins: 0";
     document.getElementById("profileButton").style.display = "none";
 
+    // ⭐ DISABLE POST BOX
+    document.getElementById("postText").disabled = true;
+    document.getElementById("postButton").disabled = true;
+
+    // ⭐ HIDE FEED + FRIENDS
+    document.getElementById("feed").innerHTML =
+      "<p style='color:#fff;'>Please log in to see the feed.</p>";
+    document.getElementById("friendRequestsBox").style.display = "none";
+    document.getElementById("friendsBox").style.display = "none";
+
+    // ⭐ SHOW VISITOR COUNTER BUT DO NOT INCREASE
     const counterRef = doc(db, "siteStats", "visitors");
     const snap = await getDoc(counterRef);
     document.getElementById("visitorCounter").innerText =
       "Visitor Count: " + snap.data().visits;
+
+    // ⭐ RESET COINS
+    document.getElementById("coinDisplay").innerText = "Coins: 0";
   }
 });
 </script>
