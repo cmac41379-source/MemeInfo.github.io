@@ -291,7 +291,7 @@
       <p>No friends yet.</p>
     </div>
   </div>
-  <!-- ⭐ MEME FEED SECTION ⭐ -->
+<!-- ⭐ MEME FEED SECTION ⭐ -->
   <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
 
     <!-- POST BOX -->
@@ -443,8 +443,7 @@
     await updateDoc(userRef, { coins: coins + 1 });
     updateCoinDisplay(user);
   }
-
-  // ⭐ AI MODERATION
+// ⭐ AI MODERATION
   function aiModerate(text) {
     const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent"];
     for (let w of badWords) {
@@ -633,8 +632,7 @@
 
     });
   }
-
-  // ⭐ FRIEND REQUESTS
+// ⭐ FRIEND REQUESTS
   async function renderFriendRequests(currentUserData, currentUserId) {
     if (!auth.currentUser) {
       document.getElementById("friendRequestsList").innerHTML =
@@ -784,6 +782,7 @@
       box.appendChild(div);
     }
   }
+
   // ⭐ AUTH STATE
   onAuthStateChanged(auth, async user => {
     if (user) {
@@ -854,6 +853,10 @@
         await setDoc(doc(db, "posts", postID), {
           userID: user.uid,
           username: userData.username || user.email,
+
+          /* ⭐ ONLY CHANGE ADDED ⭐ */
+          membership_title: userData.membership_title || "",
+
           pfpURL: userData.pfp || "",
           text: text,
           timestamp: serverTimestamp(),
