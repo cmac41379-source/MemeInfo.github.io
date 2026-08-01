@@ -519,7 +519,13 @@
         postEl.innerHTML = `
           <div style="display:flex; align-items:center;">
             <img src="${data.pfpURL || ''}" style="width:50px;height:50px;border-radius:50%;border:2px solid #000;margin-right:10px;">
-            <strong><a href="profile.html?uid=${data.userID}" style="color:#00f;">${data.username || data.userID}</a></strong>
+
+            <!-- ⭐ MEMBERSHIP DISPLAY ADDED (OPTION A) ⭐ -->
+            <strong>
+              <a href="profile.html?uid=${data.userID}" style="color:#00f;">
+                ${data.username || data.userID} — ${data.membership_title || ""}
+              </a>
+            </strong>
           </div>
 
           <p style="margin-top:10px;color:#000;">${data.text}</p>
@@ -632,6 +638,7 @@
 
     });
   }
+
 // ⭐ FRIEND REQUESTS
   async function renderFriendRequests(currentUserData, currentUserId) {
     if (!auth.currentUser) {
@@ -854,7 +861,7 @@
           userID: user.uid,
           username: userData.username || user.email,
 
-          /* ⭐ ONLY CHANGE ADDED ⭐ */
+          /* ⭐ MEMBERSHIP SAVE FIX ⭐ */
           membership_title: userData.membership_title || "",
 
           pfpURL: userData.pfp || "",
