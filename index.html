@@ -265,6 +265,7 @@
   <div id="feed" style="margin-top:30px;"></div>
 
 </div>
+
 <h2 style="margin-top:40px;">📜 Classic Meme Timeline (2005–2014) 📜</h2>
 
 <div class="timeline"></div>
@@ -292,10 +293,10 @@ import {
   serverTimestamp,
   collection,
   query,
-  where,
   orderBy,
   getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
   authDomain: "meme-encyclopedia.firebaseapp.com",
@@ -315,6 +316,7 @@ const loginBtn = document.getElementById("loginBtn");
 const signupBtn = document.getElementById("signupBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const welcomeBox = document.getElementById("welcomeBox");
+
 // ⭐ SIGNUP
 signupBtn.onclick = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value)
@@ -344,6 +346,7 @@ loginBtn.onclick = () => {
 logoutBtn.onclick = () => {
   signOut(auth);
 };
+
 // ⭐ VISITOR COUNTER
 async function updateVisitorCounter(user) {
   const userRef = doc(db, "users", user.uid);
@@ -383,6 +386,7 @@ async function autoAddCoin(user) {
   await updateDoc(userRef, { coins: coins + 1 });
   updateCoinDisplay(user);
 }
+
 // ⭐ AI MODERATION
 function aiModerate(text) {
   const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent"];
@@ -394,19 +398,23 @@ function aiModerate(text) {
   return { safe:true };
 }
 
-// ⭐ LOAD FEED
+// ⭐ LOAD FEED (FIXED)
 async function loadFeed() {
   const feedDiv = document.getElementById("feed");
   feedDiv.innerHTML = "<p style='text-align:center;color:#fff;'>Loading feed...</p>";
 
   const q = query(
     collection(db, "posts"),
-    where("approved", "==", true),
     orderBy("timestamp", "desc")
   );
 
   const snap = await getDocs(q);
   feedDiv.innerHTML = "";
+
+  if (snap.empty) {
+    feedDiv.innerHTML = "<p style='text-align:center;color:#fff;'>No posts yet.</p>";
+    return;
+  }
 
   snap.forEach(docSnap => {
     const data = docSnap.data();
@@ -416,16 +424,17 @@ async function loadFeed() {
 
     postEl.innerHTML = `
       <div style="display:flex; align-items:center;">
-        <img src="${data.pfpURL}" style="width:50px;height:50px;border-radius:50%;border:2px solid #000;margin-right:10px;">
+        <img src="${data.pfpURL || ''}" style="width:50px;height:50px;border-radius:50%;border:2px solid #000;margin-right:10px;">
         <strong>${data.username}</strong>
       </div>
       <p style="margin-top:10px;color:#000;">${data.text}</p>
-      <small style="color:#000;">${data.timestamp?.toDate()}</small>
+      <small style="color:#000;">${data.timestamp?.toDate?.() || "Just now"}</small>
     `;
 
     feedDiv.appendChild(postEl);
   });
 }
+
 // ⭐ AUTH + FEED
 onAuthStateChanged(auth, async user => {
   if (user) {
@@ -511,5 +520,5 @@ onAuthStateChanged(auth, async user => {
   }
 });
 </script>
+
 </body>
-</html>
