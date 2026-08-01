@@ -67,7 +67,6 @@
 
 <body>
 
-<!-- ⭐ BACK BUTTON ⭐ -->
 <a href="index.html" style="
   display:inline-block;
   background: linear-gradient(90deg, #ff00ff, #00ffff);
@@ -89,7 +88,6 @@
   <p>Your coins: <span id="coinDisplay">0</span></p>
 </header>
 
-<!-- ⭐ SHOP ITEMS ⭐ -->
 <div class="item">
   <h2>🔥 Trollface Membership</h2>
   <p>Cost: 20 coins</p>
@@ -144,7 +142,8 @@
     }
   });
 
-  async function buyItem(itemName, cost) {
+  // ⭐ MAKE BUY FUNCTION GLOBAL FOR INLINE onclick
+  window.buyItem = async function(itemName, cost) {
     if (userCoins < cost) {
       document.getElementById("message").innerText = "❌ Not enough coins!";
       return;
@@ -160,7 +159,7 @@
 
     document.getElementById("coinDisplay").innerText = userCoins;
     document.getElementById("message").innerText = "✅ Purchase successful!";
-  }
+  };
 </script>
 
 </body>
