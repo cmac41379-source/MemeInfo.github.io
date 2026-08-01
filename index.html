@@ -296,6 +296,25 @@ import {
   orderBy,
   getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+  authDomain: "meme-encyclopedia.firebaseapp.com",
+  projectId: "meme-encyclopedia",
+  storageBucket: "meme-encyclopedia.firebasestorage.app",
+  messagingSenderId: "496237997014",
+  appId: "1:496237997014:web:382e628a4da83219ced277"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const loginBtn = document.getElementById("loginBtn");
+const signupBtn = document.getElementById("signupBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const welcomeBox = document.getElementById("welcomeBox");
 // ⭐ SIGNUP
 signupBtn.onclick = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value)
