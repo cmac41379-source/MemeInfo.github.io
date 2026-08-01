@@ -553,7 +553,7 @@ function loadFeedLive() {
 
         await setDoc(doc(collection(db, "posts", postID, "comments")), {
           userID: auth.currentUser.uid,
-          username: auth.currentUser.email,
+          username: userData.username || auth.currentUser.email,
           text: text,
           timestamp: serverTimestamp()
         });
