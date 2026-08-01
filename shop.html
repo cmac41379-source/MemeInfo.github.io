@@ -142,8 +142,18 @@
     }
   });
 
-  // ⭐ MAKE BUY FUNCTION GLOBAL FOR INLINE onclick
+  // ⭐ FIXED BUY FUNCTION — prevents double purchase
   window.buyItem = async function(itemName, cost) {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+
+    // ⭐ Prevent buying twice
+    if (userSnap.data()[`shop_${itemName}`] === true) {
+      document.getElementById("message").innerText =
+        "❌ You already own this membership!";
+      return;
+    }
+
     if (userCoins < cost) {
       document.getElementById("message").innerText = "❌ Not enough coins!";
       return;
@@ -151,7 +161,6 @@
 
     userCoins -= cost;
 
-    const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
       coins: userCoins,
       [`shop_${itemName}`]: true
