@@ -220,658 +220,662 @@
     <span>🎉 WELCOME TO THE OFFICIAL MEME ARCHIVE 🎉 YOU’VE ENTERED THE MEME ZONE 🎉</span>
   </div>
 
-<!-- ⭐ VISITOR COUNTER ⭐ -->
-<div id="visitorCounter" style="
-  background: rgba(0,0,0,0.6);
-  padding: 10px 15px;
-  border-radius: 10px;
-  border: 2px solid #fff;
-  font-size: 1.2rem;
-  margin: 20px auto;
-  width: fit-content;
-  box-shadow: 0 0 10px #fff;
-">
-  Visitor Count: loading...
-</div>
-
-<div class="container">
-  <h2>🔥 Legendary Memes 🔥</h2>
-  <ul>
-    <li><a href="memes/doge.html">🐶 Doge</a></li>
-    <li><a href="memes/rickroll.html">🎵 Rickroll</a></li>
-    <li><a href="quiz.html">🧠 Meme Personality Quiz</a></li>
-  </ul>
-</div>
-
-<!-- ⭐ FRIEND REQUESTS SECTION ⭐ -->
-<div class="container" id="friendRequestsBox">
-  <h2>👥 Friend Requests</h2>
-  <div id="friendRequestsList">
-    <p>No friend requests.</p>
-  </div>
-</div>
-
-<!-- ⭐ FRIENDS LIST SECTION ⭐ -->
-<div class="container" id="friendsBox">
-  <h2>🫂 Friends (<span id="friendsCount">0</span>)</h2>
-  <div id="friendsList">
-    <p>No friends yet.</p>
-  </div>
-</div>
-<!-- ⭐ MEME FEED SECTION ⭐ -->
-<div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
-
-  <!-- POST BOX -->
-  <div id="postBox" style="background:#fff; border:3px solid #000; padding:20px; border-radius:15px;">
-    <h2 style="color:#000; text-align:center;">Create a Post</h2>
-
-    <textarea id="postText"
-      placeholder="Type your meme here..."
-      style="width:100%; height:120px; padding:10px; font-size:16px; border:2px solid #000; border-radius:10px; resize:none;"
-      disabled></textarea> <!-- ⭐ DISABLED BY DEFAULT -->
-
-    <button id="postButton"
-      style="margin-top:10px; width:100%; padding:12px; background:#00ccff; border:3px solid #000; border-radius:10px; font-size:20px; cursor:pointer;"
-      disabled> <!-- ⭐ DISABLED BY DEFAULT -->
-      Post
-    </button>
-
-    <p id="postStatus" style="text-align:center; margin-top:10px; color:#000;"></p>
+  <!-- ⭐ VISITOR COUNTER ⭐ -->
+  <div id="visitorCounter" style="
+    background: rgba(0,0,0,0.6);
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    font-size: 1.2rem;
+    margin: 20px auto;
+    width: fit-content;
+    box-shadow: 0 0 10px #fff;
+  ">
+    Visitor Count: loading...
   </div>
 
-  <!-- FEED POSTS -->
-  <div id="feed" style="margin-top:30px;"></div>
+  <div class="container">
+    <h2>🔥 Legendary Memes 🔥</h2>
+    <ul>
+      <li><a href="memes/doge.html">🐶 Doge</a></li>
+      <li><a href="memes/rickroll.html">🎵 Rickroll</a></li>
+      <li><a href="quiz.html">🧠 Meme Personality Quiz</a></li>
+    </ul>
+  </div>
 
-</div>
+  <!-- ⭐ FRIEND REQUESTS SECTION ⭐ -->
+  <div class="container" id="friendRequestsBox">
+    <h2>👥 Friend Requests</h2>
+    <div id="friendRequestsList">
+      <p>No friend requests.</p>
+    </div>
+  </div>
 
-<h2 style="margin-top:40px;">📜 Classic Meme Timeline (2005–2014) 📜</h2>
+  <!-- ⭐ FRIENDS LIST SECTION ⭐ -->
+  <div class="container" id="friendsBox">
+    <h2>🫂 Friends (<span id="friendsCount">0</span>)</h2>
+    <div id="friendsList">
+      <p>No friends yet.</p>
+    </div>
+  </div>
+  <!-- ⭐ MEME FEED SECTION ⭐ -->
+  <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
 
-<div class="timeline"></div>
+    <!-- POST BOX -->
+    <div id="postBox" style="background:#fff; border:3px solid #000; padding:20px; border-radius:15px;">
+      <h2 style="color:#000; text-align:center;">Create a Post</h2>
 
-<footer>
-  Created by <strong>Manper</strong> — Est. 2026 🌀
-  <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
-</footer>
+      <textarea id="postText"
+        placeholder="Type your meme here..."
+        style="width:100%; height:120px; padding:10px; font-size:16px; border:2px solid #000; border-radius:10px; resize:none;"
+        disabled></textarea>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+      <button id="postButton"
+        style="margin-top:10px; width:100%; padding:12px; background:#00ccff; border:3px solid #000; border-radius:10px; font-size:20px; cursor:pointer;"
+        disabled>
+        Post
+      </button>
 
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  serverTimestamp,
-  collection,
-  query,
-  orderBy,
-  getDocs,
-  onSnapshot,
-  deleteDoc
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+      <p id="postStatus" style="text-align:center; margin-top:10px; color:#000;"></p>
+    </div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
-  authDomain: "meme-encyclopedia.firebaseapp.com",
-  projectId: "meme-encyclopedia",
-  storageBucket: "meme-encyclopedia.firebasestorage.app",
-  messagingSenderId: "496237997014",
-  appId: "1:496237997014:web:382e628a4da83219ced277"
-};
+    <!-- FEED POSTS -->
+    <div id="feed" style="margin-top:30px;"></div>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  </div>
 
-const email = document.getElementById("email");
-const password = document.getElementById("password");
-const loginBtn = document.getElementById("loginBtn");
-const signupBtn = document.getElementById("signupBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const welcomeBox = document.getElementById("welcomeBox");
+  <h2 style="margin-top:40px;">📜 Classic Meme Timeline (2005–2014) 📜</h2>
 
-// ⭐ SIGNUP
-signupBtn.onclick = () => {
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then(async (cred) => {
-      const userRef = doc(db, "users", cred.user.uid);
-      await setDoc(userRef, {
-        email: cred.user.email,
-        coins: 0,
-        username: "",
-        bio: "",
-        pfp: "",
-        joined: new Date().toLocaleDateString(),
-        hasCountedVisit: false,
-        friends: [],
-        friendRequests: [],
-        sentRequests: []
-      });
-      alert("Signup successful!");
-    })
-    .catch(err => alert(err.message));
-};
+  <div class="timeline"></div>
 
-// ⭐ LOGIN
-loginBtn.onclick = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value)
-    .catch(err => alert(err.message));
-};
+  <footer>
+    Created by <strong>Manper</strong> — Est. 2026 🌀
+    <div class="inspired">✨ Inspired by the NOGGIN CLONTITH ✨</div>
+  </footer>
 
-// ⭐ LOGOUT
-logoutBtn.onclick = () => {
-  signOut(auth);
-};
-// ⭐ VISITOR COUNTER
-async function updateVisitorCounter(user) {
-  const userRef = doc(db, "users", user.uid);
-  const userSnap = await getDoc(userRef);
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
-  const counterRef = doc(db, "siteStats", "visitors");
-  const counterSnap = await getDoc(counterRef);
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    serverTimestamp,
+    collection,
+    query,
+    orderBy,
+    getDocs,
+    onSnapshot,
+    deleteDoc
+  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-  // logged-out users DO NOT increase counter
-  if (!user) {
-    document.getElementById("visitorCounter").innerText =
-      "Visitor Count: " + counterSnap.data().visits;
-    return;
-  }
+  const firebaseConfig = {
+    apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+    authDomain: "meme-encyclopedia.firebaseapp.com",
+    projectId: "meme-encyclopedia",
+    storageBucket: "meme-encyclopedia.firebasestorage.app",
+    messagingSenderId: "496237997014",
+    appId: "1:496237997014:web:382e628a4da83219ced277"
+  };
 
-  if (userSnap.data().hasCountedVisit === true) {
-    document.getElementById("visitorCounter").innerText =
-      "Visitor Count: " + counterSnap.data().visits;
-    return;
-  }
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-  let visits = counterSnap.exists() ? counterSnap.data().visits + 1 : 1;
-  await updateDoc(counterRef, { visits });
+  const email = document.getElementById("email");
+  const password = document.getElementById("password");
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const welcomeBox = document.getElementById("welcomeBox");
 
-  await updateDoc(userRef, { hasCountedVisit: true });
+  // ⭐ SIGNUP
+  signupBtn.onclick = () => {
+    createUserWithEmailAndPassword(auth, email.value, password.value)
+      .then(async (cred) => {
+        const userRef = doc(db, "users", cred.user.uid);
+        await setDoc(userRef, {
+          email: cred.user.email,
+          coins: 0,
+          username: "",
+          bio: "",
+          pfp: "",
+          joined: new Date().toLocaleDateString(),
+          hasCountedVisit: false,
+          friends: [],
+          friendRequests: [],
+          sentRequests: []
+        });
+        alert("Signup successful!");
+      })
+      .catch(err => alert(err.message));
+  };
 
-  document.getElementById("visitorCounter").innerText =
-    "Visitor Count: " + visits;
-}
+  // ⭐ LOGIN
+  loginBtn.onclick = () => {
+    signInWithEmailAndPassword(auth, email.value, password.value)
+      .catch(err => alert(err.message));
+  };
 
-// ⭐ COINS
-async function updateCoinDisplay(user) {
-  if (!user) {
-    document.getElementById("coinDisplay").innerText = "Coins: 0";
-    return;
-  }
+  // ⭐ LOGOUT
+  logoutBtn.onclick = () => {
+    signOut(auth);
+  };
 
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
-  document.getElementById("coinDisplay").innerText =
-    "Coins: " + snap.data().coins;
-}
+  // ⭐ VISITOR COUNTER
+  async function updateVisitorCounter(user) {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
 
-async function autoAddCoin(user) {
-  if (!user) return; // logged-out users cannot earn coins
+    const counterRef = doc(db, "siteStats", "visitors");
+    const counterSnap = await getDoc(counterRef);
 
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
-  const coins = snap.data().coins;
-
-  await updateDoc(userRef, { coins: coins + 1 });
-  updateCoinDisplay(user);
-}
-
-// ⭐ AI MODERATION
-function aiModerate(text) {
-  const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent"];
-  for (let w of badWords) {
-    if (text.toLowerCase().includes(w)) {
-      return { safe:false, reason:"Blocked word: " + w };
-    }
-  }
-  return { safe:true };
-}
-
-// ⭐ AUTO DELETE EXPIRED POSTS (1 WEEK)
-async function deleteExpiredPosts() {
-  const postsRef = collection(db, "posts");
-  const snap = await getDocs(postsRef);
-
-  const now = Date.now();
-
-  snap.forEach(async docSnap => {
-    const data = docSnap.data();
-    const expiresAt = data.expiresAt?.toDate?.().getTime();
-
-    if (expiresAt && expiresAt < now) {
-      await deleteDoc(doc(db, "posts", docSnap.id));
-    }
-  });
-}
-
-// run every hour
-setInterval(deleteExpiredPosts, 3600000);
-
-// ⭐ LIVE FEED LOADER
-function loadFeedLive() {
-  const feedDiv = document.getElementById("feed");
-
-  const q = query(
-    collection(db, "posts"),
-    orderBy("timestamp", "desc")
-  );
-
-  onSnapshot(q, (snap) => {
-    // auto-hide feed when logged out
-    if (!auth.currentUser) {
-      feedDiv.innerHTML = "<p style='color:#fff;'>Please log in to see the feed.</p>";
+    if (userSnap.data().hasCountedVisit === true) {
+      document.getElementById("visitorCounter").innerText =
+        "Visitor Count: " + counterSnap.data().visits;
       return;
     }
 
-    feedDiv.innerHTML = "";
+    let visits = counterSnap.exists() ? counterSnap.data().visits + 1 : 1;
+    await updateDoc(counterRef, { visits });
 
-    if (snap.empty) {
-      feedDiv.innerHTML = "<p style='text-align:center;color:#fff;'>No posts yet.</p>";
-      return;
+    await updateDoc(userRef, { hasCountedVisit: true });
+
+    document.getElementById("visitorCounter").innerText =
+      "Visitor Count: " + visits;
+  }
+
+  // ⭐ COINS
+  async function updateCoinDisplay(user) {
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+    document.getElementById("coinDisplay").innerText =
+      "Coins: " + snap.data().coins;
+  }
+
+  async function autoAddCoin(user) {
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+    const coins = snap.data().coins;
+
+    await updateDoc(userRef, { coins: coins + 1 });
+    updateCoinDisplay(user);
+  }
+
+  // ⭐ AI MODERATION
+  function aiModerate(text) {
+    const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent"];
+    for (let w of badWords) {
+      if (text.toLowerCase().includes(w)) {
+        return { safe:false, reason:"Blocked word: " + w };
+      }
     }
+    return { safe:true };
+  }
 
-    snap.forEach(docSnap => {
+  // ⭐ AUTO DELETE EXPIRED POSTS (1 WEEK)
+  async function deleteExpiredPosts() {
+    const postsRef = collection(db, "posts");
+    const snap = await getDocs(postsRef);
+
+    const now = Date.now();
+
+    snap.forEach(async docSnap => {
       const data = docSnap.data();
+      const expiresAt = data.expiresAt?.toDate?.().getTime();
 
-      const postEl = document.createElement("div");
-      postEl.style = "background:#fff; border:3px solid #000; padding:15px; border-radius:10px; margin-bottom:20px;";
+      if (expiresAt && expiresAt < now) {
+        await deleteDoc(doc(db, "posts", docSnap.id));
+      }
+    });
+  }
 
-      let deleteButton = "";
+  // run every hour
+  setInterval(deleteExpiredPosts, 3600000);
 
-      // ⭐ ONLY ADMIN (YOU) SEES DELETE BUTTON
-      if (auth.currentUser && auth.currentUser.email === "cmac41379@gmail.com") {
-        deleteButton = `
-          <button data-id="${docSnap.id}" class="deletePostBtn"
-            style="margin-top:10px;background:#ff4444;color:#fff;border:2px solid #000;
-                   padding:5px 10px;border-radius:8px;cursor:pointer;">
-            Delete
-          </button>
-        `;
+  // ⭐ LIVE FEED LOADER
+  function loadFeedLive() {
+    const feedDiv = document.getElementById("feed");
+
+    const q = query(
+      collection(db, "posts"),
+      orderBy("timestamp", "desc")
+    );
+
+    onSnapshot(q, (snap) => {
+      // ⭐ AUTO-HIDE FEED WHEN LOGGED OUT
+      if (!auth.currentUser) {
+        feedDiv.innerHTML = "<p style='color:#fff;'>Please log in to see the feed.</p>";
+        return;
       }
 
-      // ⭐ POST CONTENT + LIKE BUTTON + COMMENT BOX
-      postEl.innerHTML = `
-        <div style="display:flex; align-items:center;">
-          <img src="${data.pfpURL || ''}" style="width:50px;height:50px;border-radius:50%;border:2px solid #000;margin-right:10px;">
-          <strong><a href="profile.html?uid=${data.userID}" style="color:#00f;">${data.username || data.userID}</a></strong>
-        </div>
+      feedDiv.innerHTML = "";
 
-        <p style="margin-top:10px;color:#000;">${data.text}</p>
-        <small style="color:#000;">${data.timestamp?.toDate?.() || "Just now"}</small>
+      if (snap.empty) {
+        feedDiv.innerHTML = "<p style='text-align:center;color:#fff;'>No posts yet.</p>";
+        return;
+      }
 
-        ${deleteButton}
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
 
-        <!-- ⭐ LIKE BUTTON ⭐ -->
-        <button class="likeBtn" data-id="${docSnap.id}"
-          style="margin-top:10px;background:#ffdd00;border:2px solid #000;
-                 padding:5px 10px;border-radius:8px;cursor:pointer;">
-          👍 Like (${data.likes?.length || 0})
-        </button>
+        const postEl = document.createElement("div");
+        postEl.style = "background:#fff; border:3px solid #000; padding:15px; border-radius:10px; margin-bottom:20px;";
 
-        <!-- ⭐ COMMENT BOX ⭐ -->
-        <div style="margin-top:15px;">
-          <input type="text" class="commentInput" data-id="${docSnap.id}"
-            placeholder="Write a comment..."
-            style="width:100%;padding:8px;border:2px solid #000;border-radius:8px;">
-          <button class="commentBtn" data-id="${docSnap.id}"
-            style="margin-top:5px;padding:6px 10px;background:#00ff99;border:2px solid #000;border-radius:8px;cursor:pointer;">
-            Comment
-          </button>
-        </div>
+        let deleteButton = "";
 
-        <!-- ⭐ COMMENTS LIST ⭐ -->
-        <div class="commentsList" id="comments-${docSnap.id}" style="margin-top:10px;"></div>
-      `;
-
-      feedDiv.appendChild(postEl);
-
-      // ⭐ LIVE COMMENT LOADER
-      const commentsDiv = document.getElementById(`comments-${docSnap.id}`);
-
-      const cq = query(
-        collection(db, "posts", docSnap.id, "comments"),
-        orderBy("timestamp", "asc")
-      );
-
-      onSnapshot(cq, (commentSnap) => {
-        commentsDiv.innerHTML = "";
-
-        commentSnap.forEach(c => {
-          const cd = c.data();
-
-          const cEl = document.createElement("div");
-          cEl.style = "background:#eee;border:2px solid #000;padding:8px;border-radius:8px;margin-top:5px;color:#000;";
-
-          cEl.innerHTML = `
-            <strong>${cd.username}</strong>: ${cd.text}
-            <br>
-            <small>${cd.timestamp?.toDate?.() || ""}</small>
+        // ⭐ ONLY ADMIN (YOU) SEES DELETE BUTTON
+        if (auth.currentUser && auth.currentUser.email === "cmac41379@gmail.com") {
+          deleteButton = `
+            <button data-id="${docSnap.id}" class="deletePostBtn"
+              style="margin-top:10px;background:#ff4444;color:#fff;border:2px solid #000;
+                     padding:5px 10px;border-radius:8px;cursor:pointer;">
+              Delete
+            </button>
           `;
+        }
 
-          commentsDiv.appendChild(cEl);
+        postEl.innerHTML = `
+          <div style="display:flex; align-items:center;">
+            <img src="${data.pfpURL || ''}" style="width:50px;height:50px;border-radius:50%;border:2px solid #000;margin-right:10px;">
+            <strong><a href="profile.html?uid=${data.userID}" style="color:#00f;">${data.username || data.userID}</a></strong>
+          </div>
+
+          <p style="margin-top:10px;color:#000;">${data.text}</p>
+          <small style="color:#000;">${data.timestamp?.toDate?.() || "Just now"}</small>
+
+          ${deleteButton}
+
+          <!-- ⭐ LIKE BUTTON ⭐ -->
+          <button class="likeBtn" data-id="${docSnap.id}"
+            style="margin-top:10px;background:#ffdd00;border:2px solid #000;
+                   padding:5px 10px;border-radius:8px;cursor:pointer;">
+            👍 Like (${data.likes?.length || 0})
+          </button>
+
+          <!-- ⭐ COMMENT BOX ⭐ -->
+          <div style="margin-top:15px;">
+            <input type="text" class="commentInput" data-id="${docSnap.id}"
+              placeholder="Write a comment..."
+              style="width:100%;padding:8px;border:2px solid #000;border-radius:8px;">
+            <button class="commentBtn" data-id="${docSnap.id}"
+              style="margin-top:5px;padding:6px 10px;background:#00ff99;border:2px solid #000;border-radius:8px;cursor:pointer;">
+              Comment
+            </button>
+          </div>
+
+          <!-- ⭐ COMMENTS LIST ⭐ -->
+          <div class="commentsList" id="comments-${docSnap.id}" style="margin-top:10px;"></div>
+        `;
+
+        feedDiv.appendChild(postEl);
+
+        const commentsDiv = document.getElementById(`comments-${docSnap.id}`);
+
+        const cq = query(
+          collection(db, "posts", docSnap.id, "comments"),
+          orderBy("timestamp", "asc")
+        );
+        onSnapshot(cq, (commentSnap) => {
+          commentsDiv.innerHTML = "";
+
+          commentSnap.forEach(c => {
+            const cd = c.data();
+
+            const cEl = document.createElement("div");
+            cEl.style = "background:#eee;border:2px solid #000;padding:8px;border-radius:8px;margin-top:5px;color:#000;";
+
+            cEl.innerHTML = `
+              <strong>${cd.username}</strong>: ${cd.text}
+              <br>
+              <small>${cd.timestamp?.toDate?.() || ""}</small>
+            `;
+
+            commentsDiv.appendChild(cEl);
+          });
         });
       });
+
+      // ⭐ DELETE LOGIC (ONLY ADMIN + ONLY LOGGED IN)
+      feedDiv.querySelectorAll(".deletePostBtn").forEach(btn => {
+        btn.onclick = async () => {
+          if (!auth.currentUser) return;
+          if (auth.currentUser.email !== "cmac41379@gmail.com") return;
+
+          const id = btn.getAttribute("data-id");
+          await deleteDoc(doc(db, "posts", id));
+        };
+      });
+
+      // ⭐ COMMENT BUTTON LOGIC (ONLY LOGGED IN)
+      feedDiv.querySelectorAll(".commentBtn").forEach(btn => {
+        btn.onclick = async () => {
+          if (!auth.currentUser) return;
+
+          const postID = btn.getAttribute("data-id");
+          const input = feedDiv.querySelector(`.commentInput[data-id="${postID}"]`);
+          const text = input.value.trim();
+
+          if (text.length === 0) return;
+
+          await setDoc(doc(collection(db, "posts", postID, "comments")), {
+            userID: auth.currentUser.uid,
+            username: auth.currentUser.email,
+            text: text,
+            timestamp: serverTimestamp()
+          });
+
+          input.value = "";
+        };
+      });
+
+      // ⭐ LIKE BUTTON LOGIC (ONLY LOGGED IN)
+      feedDiv.querySelectorAll(".likeBtn").forEach(btn => {
+        btn.onclick = async () => {
+          if (!auth.currentUser) return;
+
+          const postID = btn.getAttribute("data-id");
+          const postRef = doc(db, "posts", postID);
+          const postSnap = await getDoc(postRef);
+          const postData = postSnap.data();
+
+          const userID = auth.currentUser.uid;
+
+          if (postData.likes && postData.likes.includes(userID)) return;
+
+          const newLikes = [...(postData.likes || []), userID];
+
+          await updateDoc(postRef, { likes: newLikes });
+        };
+      });
+
     });
-  });
-}
-<!-- ⭐ DELETE LOGIC -->
-<script type="module">
-feedDiv.querySelectorAll(".deletePostBtn").forEach(btn => {
-  btn.onclick = async () => {
-    const id = btn.getAttribute("data-id");
-    await deleteDoc(doc(db, "posts", id));
-  };
-});
-
-// ⭐ COMMENT BUTTON LOGIC
-feedDiv.querySelectorAll(".commentBtn").forEach(btn => {
-  btn.onclick = async () => {
-    const postID = btn.getAttribute("data-id");
-    const input = feedDiv.querySelector(`.commentInput[data-id="${postID}"]`);
-    const text = input.value.trim();
-
-    if (text.length === 0) return;
-
-    await setDoc(doc(collection(db, "posts", postID, "comments")), {
-      userID: auth.currentUser.uid,
-      username: auth.currentUser.email,
-      text: text,
-      timestamp: serverTimestamp()
-    });
-
-    input.value = "";
-  };
-});
-
-// ⭐ LIKE BUTTON LOGIC
-feedDiv.querySelectorAll(".likeBtn").forEach(btn => {
-  btn.onclick = async () => {
-    const postID = btn.getAttribute("data-id");
-    const postRef = doc(db, "posts", postID);
-    const postSnap = await getDoc(postRef);
-    const postData = postSnap.data();
-
-    const userID = auth.currentUser.uid;
-
-    if (postData.likes && postData.likes.includes(userID)) return;
-
-    const newLikes = [...(postData.likes || []), userID];
-
-    await updateDoc(postRef, { likes: newLikes });
-  };
-});
-
-});
-
-// ⭐ FRIEND REQUESTS
-async function renderFriendRequests(currentUserData, currentUserId) {
-  const box = document.getElementById("friendRequestsList");
-  box.innerHTML = "";
-
-  const requests = currentUserData.friendRequests || [];
-  if (requests.length === 0) {
-    box.innerHTML = "<p>No friend requests.</p>";
-    return;
   }
 
-  for (const requesterId of requests) {
+  // ⭐ FRIEND REQUESTS
+  async function renderFriendRequests(currentUserData, currentUserId) {
+    if (!auth.currentUser) {
+      document.getElementById("friendRequestsList").innerHTML =
+        "<p>Please log in to see friend requests.</p>";
+      return;
+    }
+
+    const box = document.getElementById("friendRequestsList");
+    box.innerHTML = "";
+
+    const requests = currentUserData.friendRequests || [];
+    if (requests.length === 0) {
+      box.innerHTML = "<p>No friend requests.</p>";
+      return;
+    }
+
+    for (const requesterId of requests) {
+      const requesterRef = doc(db, "users", requesterId);
+      const requesterSnap = await getDoc(requesterRef);
+      const requesterData = requesterSnap.data();
+
+      const div = document.createElement("div");
+      div.style = "margin:10px 0;";
+
+      const name = requesterData.username || requesterData.email || requesterId;
+
+      div.innerHTML = `
+        <span>${name}</span>
+        <button style="margin-left:10px;" data-id="${requesterId}" class="acceptBtn">Accept</button>
+        <button style="margin-left:5px;" data-id="${requesterId}" class="declineBtn">Decline</button>
+      `;
+
+      box.appendChild(div);
+    }
+
+    box.querySelectorAll(".acceptBtn").forEach(btn => {
+      btn.onclick = async () => {
+        if (!auth.currentUser) return;
+        const requesterId = btn.getAttribute("data-id");
+        await acceptFriendRequest(currentUserId, requesterId);
+      };
+    });
+
+    box.querySelectorAll(".declineBtn").forEach(btn => {
+      btn.onclick = async () => {
+        if (!auth.currentUser) return;
+        const requesterId = btn.getAttribute("data-id");
+        await declineFriendRequest(currentUserId, requesterId);
+      };
+    });
+  }
+
+  // ⭐ ACCEPT FRIEND REQUEST
+  async function acceptFriendRequest(currentUserId, requesterId) {
+    const currentUserRef = doc(db, "users", currentUserId);
     const requesterRef = doc(db, "users", requesterId);
+
+    const currentSnap = await getDoc(currentUserRef);
     const requesterSnap = await getDoc(requesterRef);
+
+    const currentData = currentSnap.data();
     const requesterData = requesterSnap.data();
 
-    const div = document.createElement("div");
-    div.style = "margin:10px 0;";
+    const newCurrentFriends = Array.from(new Set([...(currentData.friends || []), requesterId]));
+    const newRequesterFriends = Array.from(new Set([...(requesterData.friends || []), currentUserId]));
 
-    const name = requesterData.username || requesterData.email || requesterId;
+    const newCurrentRequests = (currentData.friendRequests || []).filter(id => id !== requesterId);
+    const newRequesterSent = (requesterData.sentRequests || []).filter(id => id !== currentUserId);
 
-    div.innerHTML = `
-      <span>${name}</span>
-      <button style="margin-left:10px;" data-id="${requesterId}" class="acceptBtn">Accept</button>
-      <button style="margin-left:5px;" data-id="${requesterId}" class="declineBtn">Decline</button>
-    `;
+    await updateDoc(currentUserRef, {
+      friends: newCurrentFriends,
+      friendRequests: newCurrentRequests
+    });
 
-    box.appendChild(div);
+    await updateDoc(requesterRef, {
+      friends: newRequesterFriends,
+      sentRequests: newRequesterSent
+    });
+
+    const updatedSnap = await getDoc(currentUserRef);
+    renderFriendRequests(updatedSnap.data(), currentUserId);
+    renderFriends(updatedSnap.data());
   }
 
-  box.querySelectorAll(".acceptBtn").forEach(btn => {
-    btn.onclick = async () => {
-      const requesterId = btn.getAttribute("data-id");
-      await acceptFriendRequest(currentUserId, requesterId);
-    };
-  });
+  // ⭐ DECLINE FRIEND REQUEST
+  async function declineFriendRequest(currentUserId, requesterId) {
+    const currentUserRef = doc(db, "users", currentUserId);
+    const requesterRef = doc(db, "users", requesterId);
 
-  box.querySelectorAll(".declineBtn").forEach(btn => {
-    btn.onclick = async () => {
-      const requesterId = btn.getAttribute("data-id");
-      await declineFriendRequest(currentUserId, requesterId);
-    };
-  });
-}
+    const currentSnap = await getDoc(currentUserRef);
+    const requesterSnap = await getDoc(requesterRef);
 
-// ⭐ ACCEPT FRIEND REQUEST
-async function acceptFriendRequest(currentUserId, requesterId) {
-  const currentUserRef = doc(db, "users", currentUserId);
-  const requesterRef = doc(db, "users", requesterId);
+    const currentData = currentSnap.data();
+    const requesterData = requesterSnap.data();
 
-  const currentSnap = await getDoc(currentUserRef);
-  const requesterSnap = await getDoc(requesterRef);
+    const newCurrentRequests = (currentData.friendRequests || []).filter(id => id !== requesterId);
+    const newRequesterSent = (requesterData.sentRequests || []).filter(id => id !== currentUserId);
 
-  const currentData = currentSnap.data();
-  const requesterData = requesterSnap.data();
+    await updateDoc(currentUserRef, {
+      friendRequests: newCurrentRequests
+    });
 
-  const newCurrentFriends = Array.from(new Set([...(currentData.friends || []), requesterId]));
-  const newRequesterFriends = Array.from(new Set([...(requesterData.friends || []), currentUserId]));
+    await updateDoc(requesterRef, {
+      sentRequests: newRequesterSent
+    });
 
-  const newCurrentRequests = (currentData.friendRequests || []).filter(id => id !== requesterId);
-  const newRequesterSent = (requesterData.sentRequests || []).filter(id => id !== currentUserId);
-
-  await updateDoc(currentUserRef, {
-    friends: newCurrentFriends,
-    friendRequests: newCurrentRequests
-  });
-
-  await updateDoc(requesterRef, {
-    friends: newRequesterFriends,
-    sentRequests: newRequesterSent
-  });
-
-  const updatedSnap = await getDoc(currentUserRef);
-  renderFriendRequests(updatedSnap.data(), currentUserId);
-  renderFriends(updatedSnap.data());
-}
-
-// ⭐ DECLINE FRIEND REQUEST
-async function declineFriendRequest(currentUserId, requesterId) {
-  const currentUserRef = doc(db, "users", currentUserId);
-  const requesterRef = doc(db, "users", requesterId);
-
-  const currentSnap = await getDoc(currentUserRef);
-  const requesterSnap = await getDoc(requesterRef);
-
-  const currentData = currentSnap.data();
-  const requesterData = requesterSnap.data();
-
-  const newCurrentRequests = (currentData.friendRequests || []).filter(id => id !== requesterId);
-  const newRequesterSent = (requesterData.sentRequests || []).filter(id => id !== currentUserId);
-
-  await updateDoc(currentUserRef, {
-    friendRequests: newCurrentRequests
-  });
-
-  await updateDoc(requesterRef, {
-    sentRequests: newRequesterSent
-  });
-
-  const updatedSnap = await getDoc(currentUserRef);
-  renderFriendRequests(updatedSnap.data(), currentUserId);
-}
-
-// ⭐ RENDER FRIENDS LIST
-async function renderFriends(currentUserData) {
-  const box = document.getElementById("friendsList");
-  const countSpan = document.getElementById("friendsCount");
-
-  box.innerHTML = "";
-
-  const friends = currentUserData.friends || [];
-  countSpan.innerText = friends.length;
-
-  if (friends.length === 0) {
-    box.innerHTML = "<p>No friends yet.</p>";
-    return;
+    const updatedSnap = await getDoc(currentUserRef);
+    renderFriendRequests(updatedSnap.data(), currentUserId);
   }
 
-  for (const friendId of friends) {
-    const friendRef = doc(db, "users", friendId);
-    const friendSnap = await getDoc(friendRef);
-    const friendData = friendSnap.data();
-
-    const div = document.createElement("div");
-    div.style = "margin:10px 0;";
-
-    const name = friendData.username || friendData.email || friendId;
-
-    div.innerHTML = `
-      <span>⭐ ${name}</span>
-    `;
-
-    box.appendChild(div);
-  }
-}
-
-// ⭐ AUTH STATE
-onAuthStateChanged(auth, async user => {
-  if (user) {
-    // ⭐ LOGGED IN
-    welcomeBox.innerHTML = "Welcome, " + user.email + "!";
-    logoutBtn.style.display = "inline-block";
-
-    const userRef = doc(db, "users", user.uid);
-    let snap = await getDoc(userRef);
-
-    if (!snap.exists()) {
-      await setDoc(userRef, {
-        email: user.email,
-        coins: 0,
-        username: "",
-        bio: "",
-        pfp: "",
-        joined: new Date().toLocaleDateString(),
-        hasCountedVisit: false,
-        friends: [],
-        friendRequests: [],
-        sentRequests: []
-      });
-      snap = await getDoc(userRef);
+  // ⭐ RENDER FRIENDS LIST
+  async function renderFriends(currentUserData) {
+    if (!auth.currentUser) {
+      document.getElementById("friendsList").innerHTML =
+        "<p>Please log in to see your friends.</p>";
+      document.getElementById("friendsCount").innerText = "0";
+      return;
     }
 
-    const userData = snap.data();
+    const box = document.getElementById("friendsList");
+    const countSpan = document.getElementById("friendsCount");
 
-    // ⭐ ADMIN ROLE — ONLY YOU
-    if (user.email === "cmac41379@gmail.com") {
-      await updateDoc(userRef, { role: "admin" });
+    box.innerHTML = "";
+
+    const friends = currentUserData.friends || [];
+    countSpan.innerText = friends.length;
+
+    if (friends.length === 0) {
+      box.innerHTML = "<p>No friends yet.</p>";
+      return;
     }
 
-    updateCoinDisplay(user);
-    updateVisitorCounter(user);
+    for (const friendId of friends) {
+      const friendRef = doc(db, "users", friendId);
+      const friendSnap = await getDoc(friendRef);
+      const friendData = friendSnap.data();
 
-    document.getElementById("profileButton").style.display = "block";
+      const div = document.createElement("div");
+      div.style = "margin:10px 0;";
 
-    // ⭐ ENABLE POST BOX
-    document.getElementById("postText").disabled = false;
-    document.getElementById("postButton").disabled = false;
+      const name = friendData.username || friendData.email || friendId;
 
-    // ⭐ SHOW FRIEND UI
-    document.getElementById("friendRequestsBox").style.display = "block";
-    document.getElementById("friendsBox").style.display = "block";
+      div.innerHTML = `
+        <span>⭐ ${name}</span>
+      `;
 
-    // ⭐ POSTING
-    const postButton = document.getElementById("postButton");
-    const postText = document.getElementById("postText");
-    const postStatus = document.getElementById("postStatus");
-
-    postButton.onclick = async () => {
-      const text = postText.value.trim();
-      if (text.length === 0) {
-        postStatus.innerText = "Post cannot be empty.";
-        return;
-      }
-
-      const mod = aiModerate(text);
-      if (!mod.safe) {
-        postStatus.innerText = "Post blocked: " + mod.reason;
-        return;
-      }
-
-      postStatus.innerText = "Posting...";
-
-      const postID = crypto.randomUUID();
-      await setDoc(doc(db, "posts", postID), {
-        userID: user.uid,
-        username: userData.username || user.email,
-        pfpURL: userData.pfp || "",
-        text: text,
-        timestamp: serverTimestamp(),
-        approved: true,
-        flagged: false,
-        reason: "",
-        expiresAt: new Date(Date.now() + 7*24*60*60*1000),
-        likes: [] // ⭐ NEW
-      });
-
-      postStatus.innerText = "Posted!";
-      postText.value = "";
-    };
-
-    // ⭐ LIVE FEED
-    loadFeedLive();
-
-    // ⭐ FRIEND UI
-    renderFriendRequests(userData, user.uid);
-    renderFriends(userData);
-
-    // ⭐ AUTO COINS
-    setInterval(() => {
-      if (auth.currentUser) {
-        autoAddCoin(auth.currentUser);
-      }
-    }, 300000);
-
-  } else {
-    // ⭐ LOGGED OUT
-    welcomeBox.innerHTML = "";
-    logoutBtn.style.display = "none";
-    document.getElementById("profileButton").style.display = "none";
-
-    // ⭐ DISABLE POST BOX
-    document.getElementById("postText").disabled = true;
-    document.getElementById("postButton").disabled = true;
-
-    // ⭐ HIDE FEED + FRIENDS
-    document.getElementById("feed").innerHTML =
-      "<p style='color:#fff;'>Please log in to see the feed.</p>";
-    document.getElementById("friendRequestsBox").style.display = "none";
-    document.getElementById("friendsBox").style.display = "none";
-
-    // ⭐ SHOW VISITOR COUNTER BUT DO NOT INCREASE
-    const counterRef = doc(db, "siteStats", "visitors");
-    const snap = await getDoc(counterRef);
-    document.getElementById("visitorCounter").innerText =
-      "Visitor Count: " + snap.data().visits;
-
-    // ⭐ RESET COINS
-    document.getElementById("coinDisplay").innerText = "Coins: 0";
+      box.appendChild(div);
+    }
   }
-});
-</script>
+  // ⭐ AUTH STATE
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      // ⭐ LOGGED IN
+      welcomeBox.innerHTML = "Welcome, " + user.email + "!";
+      logoutBtn.style.display = "inline-block";
+
+      const userRef = doc(db, "users", user.uid);
+      let snap = await getDoc(userRef);
+
+      if (!snap.exists()) {
+        await setDoc(userRef, {
+          email: user.email,
+          coins: 0,
+          username: "",
+          bio: "",
+          pfp: "",
+          joined: new Date().toLocaleDateString(),
+          hasCountedVisit: false,
+          friends: [],
+          friendRequests: [],
+          sentRequests: []
+        });
+        snap = await getDoc(userRef);
+      }
+
+      const userData = snap.data();
+
+      // ⭐ ADMIN ROLE — ONLY YOU
+      if (user.email === "cmac41379@gmail.com") {
+        await updateDoc(userRef, { role: "admin" });
+      }
+
+      updateCoinDisplay(user);
+      updateVisitorCounter(user);
+
+      document.getElementById("profileButton").style.display = "block";
+
+      // ⭐ ENABLE POST BOX
+      document.getElementById("postText").disabled = false;
+      document.getElementById("postButton").disabled = false;
+
+      // ⭐ SHOW FRIEND UI
+      document.getElementById("friendRequestsBox").style.display = "block";
+      document.getElementById("friendsBox").style.display = "block";
+
+      // ⭐ POSTING
+      const postButton = document.getElementById("postButton");
+      const postText = document.getElementById("postText");
+      const postStatus = document.getElementById("postStatus");
+
+      postButton.onclick = async () => {
+        const text = postText.value.trim();
+        if (text.length === 0) {
+          postStatus.innerText = "Post cannot be empty.";
+          return;
+        }
+
+        const mod = aiModerate(text);
+        if (!mod.safe) {
+          postStatus.innerText = "Post blocked: " + mod.reason;
+          return;
+        }
+
+        postStatus.innerText = "Posting...";
+
+        const postID = crypto.randomUUID();
+        await setDoc(doc(db, "posts", postID), {
+          userID: user.uid,
+          username: userData.username || user.email,
+          pfpURL: userData.pfp || "",
+          text: text,
+          timestamp: serverTimestamp(),
+          approved: true,
+          flagged: false,
+          reason: "",
+          expiresAt: new Date(Date.now() + 7*24*60*60*1000),
+          likes: []
+        });
+
+        postStatus.innerText = "Posted!";
+        postText.value = "";
+      };
+
+      // ⭐ LIVE FEED
+      loadFeedLive();
+
+      // ⭐ FRIEND UI
+      renderFriendRequests(userData, user.uid);
+      renderFriends(userData);
+
+      // ⭐ AUTO COINS
+      setInterval(() => {
+        if (auth.currentUser) {
+          autoAddCoin(auth.currentUser);
+        }
+      }, 300000);
+
+    } else {
+      // ⭐ LOGGED OUT
+      welcomeBox.innerHTML = "";
+      logoutBtn.style.display = "none";
+      document.getElementById("coinDisplay").innerText = "Coins: 0";
+      document.getElementById("profileButton").style.display = "none";
+
+      // ⭐ DISABLE POST BOX
+      document.getElementById("postText").disabled = true;
+      document.getElementById("postButton").disabled = true;
+
+      // ⭐ HIDE FEED
+      document.getElementById("feed").innerHTML =
+        "<p style='color:#fff;'>Please log in to see the feed.</p>";
+
+      // ⭐ HIDE FRIEND UI
+      document.getElementById("friendRequestsBox").style.display = "none";
+      document.getElementById("friendsBox").style.display = "none";
+
+      // ⭐ SHOW VISITOR COUNTER (but do NOT increase)
+      const counterRef = doc(db, "siteStats", "visitors");
+      const snap = await getDoc(counterRef);
+      document.getElementById("visitorCounter").innerText =
+        "Visitor Count: " + snap.data().visits;
+    }
+  });
+  </script>
 
 </body>
 </html>
