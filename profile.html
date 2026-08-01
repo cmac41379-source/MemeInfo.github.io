@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Profile</title>
+  <title>User Profile</title>
 
   <style>
     body {
@@ -15,25 +15,7 @@
       padding: 0;
     }
 
-    header {
-      background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
-      padding: 20px;
-      border-bottom: 4px solid #fff;
-      animation: glow 2s infinite alternate;
-    }
-
-    @keyframes glow {
-      from { box-shadow: 0 0 10px #fff; }
-      to { box-shadow: 0 0 30px #ff0; }
-    }
-
-    h1 {
-      font-size: 3rem;
-      text-shadow: 2px 2px 10px #000;
-      margin: 0;
-    }
-
-    .profileBox {
+    #profileContainer {
       background: rgba(0,0,0,0.5);
       border: 3px solid #fff;
       width: 80%;
@@ -41,306 +23,247 @@
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 20px #fff;
-      text-align: left;
     }
 
-    .profileBox img {
-      width: 150px;
-      height: 150px;
+    #editProfileBtn {
+      background: #00ffff;
+      border: 3px solid #000;
+      padding: 10px 20px;
       border-radius: 10px;
-      border: 3px solid #fff;
-      box-shadow: 0 0 20px #ff0;
-      margin-bottom: 20px;
-    }
-
-    a {
-      color: #0ff;
       font-weight: bold;
-      text-decoration: none;
+      cursor: pointer;
+      margin-top: 10px;
+      color: #000;
     }
 
-    a:hover {
-      text-shadow: 0 0 10px #fff;
-    }
-
-    .friendActions {
-      margin-top: 20px;
-    }
-
-    .friendActions button {
-      margin-right: 10px;
-    }
-
-    .postsBox {
-      background: rgba(0,0,0,0.5);
-      border: 3px solid #fff;
-      width: 80%;
-      margin: 20px auto;
-      padding: 20px;
+    #friendBtn {
+      background: #ff00ff;
+      border: 3px solid #000;
+      padding: 10px 20px;
       border-radius: 10px;
-      box-shadow: 0 0 20px #fff;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      color: #000;
+    }
+
+    #postsContainer {
+      margin-top: 30px;
+    }
+
+    .post {
+      background: #fff;
+      color: #000;
+      border: 3px solid #000;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
       text-align: left;
     }
   </style>
 </head>
 
 <body>
+  <div id="profileContainer">
+    <h1 id="usernameDisplay">Loading...</h1>
+    <img id="pfpDisplay" src="" style="width:120px;height:120px;border-radius:50%;border:3px solid #fff;">
+    <p id="bioDisplay"></p>
+    <p id="joinedDisplay"></p>
+    <p id="coinsDisplay"></p>
 
-<header>
-  <h1>👤 Profile</h1>
-</header>
-
-<div class="profileBox">
-  <img id="pfp" src="" alt="Profile Picture">
-
-  <p id="username" style="font-size:1.5rem; font-weight:bold;"></p>
-  <p id="email"></p>
-  <p id="bio"></p>
-  <p id="coins"></p>
-  <p id="joined"></p>
-  <p id="friendBadge"></p>
-
-  <div class="friendActions" id="friendActions">
-    <!-- Buttons will be injected here -->
+    <button id="editProfileBtn">Edit Profile</button>
+    <button id="friendBtn" style="display:none;">Add Friend</button>
   </div>
 
-  <br>
-  <a href="settings.html">⚙ Edit Profile</a>
-  <br><br>
-  <a href="index.html">🏠 Back to Home</a>
-</div>
-
-<div class="postsBox">
-  <h2>📝 Posts by this user</h2>
-  <div id="userPosts">
-    <p>No posts yet.</p>
-  </div>
-</div>
+  <h2>User Posts</h2>
+  <div id="postsContainer"></div>
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    getDoc,
-    updateDoc,
-    collection,
-    query,
-    where,
-    getDocs
-  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
-    authDomain: "meme-encyclopedia.firebaseapp.com",
-    projectId: "meme-encyclopedia",
-    storageBucket: "meme-encyclopedia.firebasestorage.app",
-    messagingSenderId: "496237997014",
-    appId: "1:496237997014:web:382e628a4da83219ced277"
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  collection,
+  query,
+  where,
+  orderBy,
+  getDocs,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+  authDomain: "meme-encyclopedia.firebaseapp.com",
+  projectId: "meme-encyclopedia",
+  storageBucket: "meme-encyclopedia.firebasestorage.app",
+  messagingSenderId: "496237997014",
+  appId: "1:496237997014:web:382e628a4da83219ced277"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+// ⭐ URL PARAMS
+const urlParams = new URLSearchParams(window.location.search);
+const viewingUID = urlParams.get("uid");
+
+// ⭐ AUTH STATE
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    alert("You must be logged in.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  const actualUID = viewingUID || user.uid;
+  const userRef = doc(db, "users", actualUID);
+  const snap = await getDoc(userRef);
+
+  if (!snap.exists()) {
+    document.getElementById("usernameDisplay").innerText = "User not found.";
+    return;
+  }
+
+  const data = snap.data();
+
+  document.getElementById("usernameDisplay").innerText = data.username || data.email;
+  document.getElementById("pfpDisplay").src = data.pfp || "";
+  document.getElementById("bioDisplay").innerText = data.bio || "";
+  document.getElementById("joinedDisplay").innerText = "Joined: " + data.joined;
+  document.getElementById("coinsDisplay").innerText = "Coins: " + data.coins;
+
+  // ⭐ FIX: Only show Edit Profile on YOUR profile
+  if (actualUID === user.uid) {
+    document.getElementById("editProfileBtn").style.display = "block";
+  } else {
+    document.getElementById("editProfileBtn").style.display = "none";
+  }
+
+  // ⭐ FRIEND BUTTON LOGIC
+  const friendBtn = document.getElementById("friendBtn");
+
+  if (actualUID !== user.uid) {
+    friendBtn.style.display = "block";
+  }
+
+  const currentUserRef = doc(db, "users", user.uid);
+  const currentSnap = await getDoc(currentUserRef);
+  const currentData = currentSnap.data();
+
+  const isFriend = currentData.friends?.includes(actualUID);
+  const hasSent = currentData.sentRequests?.includes(actualUID);
+  const hasReceived = currentData.friendRequests?.includes(actualUID);
+
+  if (isFriend) {
+    friendBtn.innerText = "Unfriend";
+  } else if (hasSent) {
+    friendBtn.innerText = "Cancel Request";
+  } else if (hasReceived) {
+    friendBtn.innerText = "Accept Request";
+  } else {
+    friendBtn.innerText = "Add Friend";
+  }
+  // ⭐ FRIEND BUTTON ACTIONS
+  friendBtn.onclick = async () => {
+    const currentUserRef = doc(db, "users", user.uid);
+    const targetRef = doc(db, "users", actualUID);
+
+    const currentSnap = await getDoc(currentUserRef);
+    const targetSnap = await getDoc(targetRef);
+
+    const currentData = currentSnap.data();
+    const targetData = targetSnap.data();
+
+    // ADD FRIEND
+    if (friendBtn.innerText === "Add Friend") {
+      await updateDoc(targetRef, {
+        friendRequests: [...(targetData.friendRequests || []), user.uid]
+      });
+
+      await updateDoc(currentUserRef, {
+        sentRequests: [...(currentData.sentRequests || []), actualUID]
+      });
+
+      friendBtn.innerText = "Cancel Request";
+    }
+
+    // CANCEL REQUEST
+    else if (friendBtn.innerText === "Cancel Request") {
+      await updateDoc(targetRef, {
+        friendRequests: (targetData.friendRequests || []).filter(id => id !== user.uid)
+      });
+
+      await updateDoc(currentUserRef, {
+        sentRequests: (currentData.sentRequests || []).filter(id => id !== actualUID)
+      });
+
+      friendBtn.innerText = "Add Friend";
+    }
+
+    // ACCEPT REQUEST
+    else if (friendBtn.innerText === "Accept Request") {
+      await updateDoc(currentUserRef, {
+        friends: [...(currentData.friends || []), actualUID],
+        friendRequests: (currentData.friendRequests || []).filter(id => id !== actualUID)
+      });
+
+      await updateDoc(targetRef, {
+        friends: [...(targetData.friends || []), user.uid],
+        sentRequests: (targetData.sentRequests || []).filter(id => id !== user.uid)
+      });
+
+      friendBtn.innerText = "Unfriend";
+    }
+
+    // UNFRIEND
+    else if (friendBtn.innerText === "Unfriend") {
+      await updateDoc(currentUserRef, {
+        friends: (currentData.friends || []).filter(id => id !== actualUID)
+      });
+
+      await updateDoc(targetRef, {
+        friends: (targetData.friends || []).filter(id => id !== user.uid)
+      });
+
+      friendBtn.innerText = "Add Friend";
+    }
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  // ⭐ LOAD POSTS
+  const postsQuery = query(
+    collection(db, "posts"),
+    where("userID", "==", actualUID),
+    orderBy("timestamp", "desc")
+  );
 
-  function getQueryParam(name) {
-    const params = new URLSearchParams(window.location.search);
-    return params.get(name);
-  }
+  onSnapshot(postsQuery, (snap) => {
+    const container = document.getElementById("postsContainer");
+    container.innerHTML = "";
 
-  async function loadUserPosts(targetUserId) {
-    const postsDiv = document.getElementById("userPosts");
-    postsDiv.innerHTML = "<p>Loading posts...</p>";
-
-    const q = query(
-      collection(db, "posts"),
-      where("userID", "==", targetUserId)
-    );
-
-    const snap = await getDocs(q);
-
-    if (snap.empty) {
-      postsDiv.innerHTML = "<p>No posts yet.</p>";
-      return;
-    }
-
-    postsDiv.innerHTML = "";
     snap.forEach(docSnap => {
-      const data = docSnap.data();
+      const post = docSnap.data();
+
       const div = document.createElement("div");
-      div.style = "margin-bottom:10px;";
+      div.className = "post";
 
       div.innerHTML = `
-        <p>${data.text}</p>
-        <small>${data.timestamp?.toDate?.() || "Just now"}</small>
+        <strong>${post.username}</strong><br>
+        <p>${post.text}</p>
+        <small>${post.timestamp?.toDate?.() || "Just now"}</small>
       `;
 
-      postsDiv.appendChild(div);
+      container.appendChild(div);
     });
-  }
-
-  async function renderFriendButtons(currentUserId, currentData, profileUserId, profileData) {
-    const container = document.getElementById("friendActions");
-    const badge = document.getElementById("friendBadge");
-    container.innerHTML = "";
-    badge.innerText = "";
-
-    if (currentUserId === profileUserId) {
-      badge.innerText = "This is your profile.";
-      return;
-    }
-
-    const friends = currentData.friends || [];
-    const sentRequests = currentData.sentRequests || [];
-    const incomingRequests = profileData.friendRequests || [];
-
-    const isFriend = friends.includes(profileUserId);
-    const hasSentRequest = sentRequests.includes(profileUserId);
-    const hasIncomingFromCurrent = incomingRequests.includes(currentUserId);
-
-    if (isFriend) {
-      badge.innerText = "⭐ Friend";
-      const unfriendBtn = document.createElement("button");
-      unfriendBtn.innerText = "Unfriend";
-      unfriendBtn.onclick = async () => {
-        const newCurrentFriends = friends.filter(id => id !== profileUserId);
-        const profileFriends = profileData.friends || [];
-        const newProfileFriends = profileFriends.filter(id => id !== currentUserId);
-
-        await updateDoc(doc(db, "users", currentUserId), {
-          friends: newCurrentFriends
-        });
-
-        await updateDoc(doc(db, "users", profileUserId), {
-          friends: newProfileFriends
-        });
-
-        const updatedCurrentSnap = await getDoc(doc(db, "users", currentUserId));
-        const updatedProfileSnap = await getDoc(doc(db, "users", profileUserId));
-        renderFriendButtons(
-          currentUserId,
-          updatedCurrentSnap.data(),
-          profileUserId,
-          updatedProfileSnap.data()
-        );
-      };
-      container.appendChild(unfriendBtn);
-      return;
-    }
-
-    if (hasSentRequest) {
-      badge.innerText = "Friend request sent.";
-      const cancelBtn = document.createElement("button");
-      cancelBtn.innerText = "Cancel Request";
-      cancelBtn.onclick = async () => {
-        const newSent = sentRequests.filter(id => id !== profileUserId);
-        const profileRequests = profileData.friendRequests || [];
-        const newProfileRequests = profileRequests.filter(id => id !== currentUserId);
-
-        await updateDoc(doc(db, "users", currentUserId), {
-          sentRequests: newSent
-        });
-
-        await updateDoc(doc(db, "users", profileUserId), {
-          friendRequests: newProfileRequests
-        });
-
-        const updatedCurrentSnap = await getDoc(doc(db, "users", currentUserId));
-        const updatedProfileSnap = await getDoc(doc(db, "users", profileUserId));
-        renderFriendButtons(
-          currentUserId,
-          updatedCurrentSnap.data(),
-          profileUserId,
-          updatedProfileSnap.data()
-        );
-      };
-      container.appendChild(cancelBtn);
-      return;
-    }
-
-    if (hasIncomingFromCurrent) {
-      badge.innerText = "They have a request from you.";
-      const cancelBtn = document.createElement("button");
-      cancelBtn.innerText = "Cancel Request";
-      cancelBtn.onclick = async () => {
-        const newSent = sentRequests.filter(id => id !== profileUserId);
-        const profileRequests = incomingRequests.filter(id => id !== currentUserId);
-
-        await updateDoc(doc(db, "users", currentUserId), {
-          sentRequests: newSent
-        });
-
-        await updateDoc(doc(db, "users", profileUserId), {
-          friendRequests: profileRequests
-        });
-
-        const updatedCurrentSnap = await getDoc(doc(db, "users", currentUserId));
-        const updatedProfileSnap = await getDoc(doc(db, "users", profileUserId));
-        renderFriendButtons(
-          currentUserId,
-          updatedCurrentSnap.data(),
-          profileUserId,
-          updatedProfileSnap.data()
-        );
-      };
-      container.appendChild(cancelBtn);
-      return;
-    }
-
-    const sendBtn = document.createElement("button");
-    sendBtn.innerText = "Send Friend Request";
-    sendBtn.onclick = async () => {
-      const newSent = Array.from(new Set([...(currentData.sentRequests || []), profileUserId]));
-      const newProfileRequests = Array.from(new Set([...(profileData.friendRequests || []), currentUserId]));
-
-      await updateDoc(doc(db, "users", currentUserId), {
-        sentRequests: newSent
-      });
-
-      await updateDoc(doc(db, "users", profileUserId), {
-        friendRequests: newProfileRequests
-      });
-
-      const updatedCurrentSnap = await getDoc(doc(db, "users", currentUserId));
-      const updatedProfileSnap = await getDoc(doc(db, "users", profileUserId));
-      renderFriendButtons(
-        currentUserId,
-        updatedCurrentSnap.data(),
-        profileUserId,
-        updatedProfileSnap.data()
-      );
-    };
-    container.appendChild(sendBtn);
-  }
-
-  onAuthStateChanged(auth, async user => {
-    if (!user) {
-      window.location.href = "index.html";
-      return;
-    }
-
-    const currentUserId = user.uid;
-    const targetUserId = getQueryParam("uid") || currentUserId;
-
-    const currentUserRef = doc(db, "users", currentUserId);
-    const currentSnap = await getDoc(currentUserRef);
-    const currentData = currentSnap.data();
-
-    const profileUserRef = doc(db, "users", targetUserId);
-    const profileSnap = await getDoc(profileUserRef);
-    const data = profileSnap.data();
-
-    document.getElementById("username").innerText = "Username: " + (data.username || "Not set");
-    document.getElementById("email").innerText = "Email: " + (data.email || user.email);
-    document.getElementById("bio").innerText = "Bio: " + (data.bio || "No bio yet");
-    document.getElementById("coins").innerText = "Coins: " + data.coins;
-    document.getElementById("joined").innerText = "Joined: " + (data.joined || "Unknown");
-
-    document.getElementById("pfp").src = data.pfp || "https://i.imgur.com/4ZQZ4ZQ.png";
-
-    await renderFriendButtons(currentUserId, currentData, targetUserId, data);
-    await loadUserPosts(targetUserId);
   });
+
+});
 </script>
 
 </body>
