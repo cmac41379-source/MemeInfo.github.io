@@ -242,6 +242,22 @@
   </ul>
 </div>
 
+<!-- ⭐ FRIEND REQUESTS SECTION ⭐ -->
+<div class="container" id="friendRequestsBox">
+  <h2>👥 Friend Requests</h2>
+  <div id="friendRequestsList">
+    <p>No friend requests.</p>
+  </div>
+</div>
+
+<!-- ⭐ FRIENDS LIST SECTION ⭐ -->
+<div class="container" id="friendsBox">
+  <h2>🫂 Friends (<span id="friendsCount">0</span>)</h2>
+  <div id="friendsList">
+    <p>No friends yet.</p>
+  </div>
+</div>
+
 <!-- ⭐ MEME FEED SECTION ⭐ -->
 <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
 
@@ -317,7 +333,7 @@ const signupBtn = document.getElementById("signupBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const welcomeBox = document.getElementById("welcomeBox");
 
-// ⭐ SIGNUP
+// ⭐ SIGNUP (ADD FRIEND FIELDS)
 signupBtn.onclick = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value)
     .then(async (cred) => {
@@ -329,7 +345,10 @@ signupBtn.onclick = () => {
         bio: "",
         pfp: "",
         joined: new Date().toLocaleDateString(),
-        hasCountedVisit: false
+        hasCountedVisit: false,
+        friends: [],
+        friendRequests: [],
+        sentRequests: []
       });
       alert("Signup successful!");
     })
@@ -398,7 +417,7 @@ function aiModerate(text) {
   return { safe:true };
 }
 
-// ⭐ LOAD FEED (FIXED)
+// ⭐ LOAD FEED
 async function loadFeed() {
   const feedDiv = document.getElementById("feed");
   feedDiv.innerHTML = "<p style='text-align:center;color:#fff;'>Loading feed...</p>";
@@ -425,7 +444,7 @@ async function loadFeed() {
     postEl.innerHTML = `
       <div style="display:flex; align-items:center;">
         <img src="${data.pfpURL || ''}" style="width:50px;height:50px;border-radius:50%;border:2px solid #000;margin-right:10px;">
-        <strong>${data.username}</strong>
+        <strong>${data.username || data.userID}</strong>
       </div>
       <p style="margin-top:10px;color:#000;">${data.text}</p>
       <small style="color:#000;">${data.timestamp?.toDate?.() || "Just now"}</small>
@@ -435,14 +454,152 @@ async function loadFeed() {
   });
 }
 
-// ⭐ AUTH + FEED
+// ⭐ RENDER FRIEND REQUESTS
+async function renderFriendRequests(currentUserData, currentUserId) {
+  const box = document.getElementById("friendRequestsList");
+  box.innerHTML = "";
+
+  const requests = currentUserData.friendRequests || [];
+  if (requests.length === 0) {
+    box.innerHTML = "<p>No friend requests.</p>";
+    return;
+  }
+
+  for (const requesterId of requests) {
+    const requesterRef = doc(db, "users", requesterId);
+    const requesterSnap = await getDoc(requesterRef);
+    const requesterData = requesterSnap.data();
+
+    const div = document.createElement("div");
+    div.style = "margin:10px 0;";
+
+    const name = requesterData.username || requesterData.email || requesterId;
+
+    div.innerHTML = `
+      <span>${name}</span>
+      <button style="margin-left:10px;" data-id="${requesterId}" class="acceptBtn">Accept</button>
+      <button style="margin-left:5px;" data-id="${requesterId}" class="declineBtn">Decline</button>
+    `;
+
+    box.appendChild(div);
+  }
+
+  // Wire buttons
+  box.querySelectorAll(".acceptBtn").forEach(btn => {
+    btn.onclick = async () => {
+      const requesterId = btn.getAttribute("data-id");
+      await acceptFriendRequest(currentUserId, requesterId);
+    };
+  });
+
+  box.querySelectorAll(".declineBtn").forEach(btn => {
+    btn.onclick = async () => {
+      const requesterId = btn.getAttribute("data-id");
+      await declineFriendRequest(currentUserId, requesterId);
+    };
+  });
+}
+
+// ⭐ ACCEPT FRIEND REQUEST
+async function acceptFriendRequest(currentUserId, requesterId) {
+  const currentUserRef = doc(db, "users", currentUserId);
+  const requesterRef = doc(db, "users", requesterId);
+
+  const currentSnap = await getDoc(currentUserRef);
+  const requesterSnap = await getDoc(requesterRef);
+
+  const currentData = currentSnap.data();
+  const requesterData = requesterSnap.data();
+
+  const newCurrentFriends = Array.from(new Set([...(currentData.friends || []), requesterId]));
+  const newRequesterFriends = Array.from(new Set([...(requesterData.friends || []), currentUserId]));
+
+  const newCurrentRequests = (currentData.friendRequests || []).filter(id => id !== requesterId);
+  const newRequesterSent = (requesterData.sentRequests || []).filter(id => id !== currentUserId);
+
+  await updateDoc(currentUserRef, {
+    friends: newCurrentFriends,
+    friendRequests: newCurrentRequests
+  });
+
+  await updateDoc(requesterRef, {
+    friends: newRequesterFriends,
+    sentRequests: newRequesterSent
+  });
+
+  // Reload UI
+  const updatedSnap = await getDoc(currentUserRef);
+  renderFriendRequests(updatedSnap.data(), currentUserId);
+  renderFriends(updatedSnap.data());
+}
+
+// ⭐ DECLINE FRIEND REQUEST
+async function declineFriendRequest(currentUserId, requesterId) {
+  const currentUserRef = doc(db, "users", currentUserId);
+  const requesterRef = doc(db, "users", requesterId);
+
+  const currentSnap = await getDoc(currentUserRef);
+  const requesterSnap = await getDoc(requesterRef);
+
+  const currentData = currentSnap.data();
+  const requesterData = requesterSnap.data();
+
+  const newCurrentRequests = (currentData.friendRequests || []).filter(id => id !== requesterId);
+  const newRequesterSent = (requesterData.sentRequests || []).filter(id => id !== currentUserId);
+
+  await updateDoc(currentUserRef, {
+    friendRequests: newCurrentRequests
+  });
+
+  await updateDoc(requesterRef, {
+    sentRequests: newRequesterSent
+  });
+
+  const updatedSnap = await getDoc(currentUserRef);
+  renderFriendRequests(updatedSnap.data(), currentUserId);
+}
+
+// ⭐ RENDER FRIENDS LIST
+async function renderFriends(currentUserData) {
+  const box = document.getElementById("friendsList");
+  const countSpan = document.getElementById("friendsCount");
+
+  box.innerHTML = "";
+
+  const friends = currentUserData.friends || [];
+  countSpan.innerText = friends.length;
+
+  if (friends.length === 0) {
+    box.innerHTML = "<p>No friends yet.</p>";
+    return;
+  }
+
+  for (const friendId of friends) {
+    const friendRef = doc(db, "users", friendId);
+    const friendSnap = await getDoc(friendRef);
+    const friendData = friendSnap.data();
+
+    const div = document.createElement("div");
+    div.style = "margin:10px 0;";
+
+    const name = friendData.username || friendData.email || friendId;
+
+    div.innerHTML = `
+      <span>⭐ ${name}</span>
+    `;
+
+    box.appendChild(div);
+  }
+}
+
+// ⭐ AUTH + FEED + FRIENDING
 onAuthStateChanged(auth, async user => {
   if (user) {
     welcomeBox.innerHTML = "Welcome, " + user.email + "!";
     logoutBtn.style.display = "inline-block";
 
     const userRef = doc(db, "users", user.uid);
-    const snap = await getDoc(userRef);
+    let snap = await getDoc(userRef);
 
     if (!snap.exists()) {
       await setDoc(userRef, {
@@ -452,9 +609,15 @@ onAuthStateChanged(auth, async user => {
         bio: "",
         pfp: "",
         joined: new Date().toLocaleDateString(),
-        hasCountedVisit: false
+        hasCountedVisit: false,
+        friends: [],
+        friendRequests: [],
+        sentRequests: []
       });
+      snap = await getDoc(userRef);
     }
+
+    const userData = snap.data();
 
     updateCoinDisplay(user);
     updateVisitorCounter(user);
@@ -484,8 +647,8 @@ onAuthStateChanged(auth, async user => {
       const postID = crypto.randomUUID();
       await setDoc(doc(db, "posts", postID), {
         userID: user.uid,
-        username: user.email,
-        pfpURL: "",
+        username: userData.username || user.email,
+        pfpURL: userData.pfp || "",
         text: text,
         timestamp: serverTimestamp(),
         approved: true,
@@ -500,6 +663,10 @@ onAuthStateChanged(auth, async user => {
     };
 
     loadFeed();
+
+    // ⭐ FRIEND UI
+    renderFriendRequests(userData, user.uid);
+    renderFriends(userData);
 
     setInterval(() => {
       if (auth.currentUser) {
@@ -522,3 +689,4 @@ onAuthStateChanged(auth, async user => {
 </script>
 
 </body>
+</html>
