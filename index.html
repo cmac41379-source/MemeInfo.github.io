@@ -439,7 +439,7 @@
 
   // ⭐ AI MODERATION
   function aiModerate(text) {
-    const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent","fuck","penis","dick","vagina","ass","asshole","butthole","shit","nigga","nigger","dickhead"];
+    const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent","fuck","penis","dick","vagina","ass","asshole","butthole","shit","nigga","nigger","dickhead","manhood","testicles","testicle","butt","stfu","sthu","sybau","lunatic","doxx","ip","address","phone number","I will doxx you","i will doxx you","dox","doxxing","death threat","hack","nga","n word","hate","negro"];
     for (let w of badWords) {
       if (text.toLowerCase().includes(w)) {
         return { safe:false, reason:"Blocked word: " + w };
