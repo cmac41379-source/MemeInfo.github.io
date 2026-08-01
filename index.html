@@ -704,6 +704,7 @@ async function renderFriends(currentUserData) {
     box.appendChild(div);
   }
 }
+</script>
 <!-- ⭐ AUTH STATE ⭐ -->
 <script type="module">
 onAuthStateChanged(auth, async user => {
@@ -787,7 +788,7 @@ onAuthStateChanged(auth, async user => {
     renderFriendRequests(userData, user.uid);
     renderFriends(userData);
 
-    // ⭐ AUTO COINS
+    // ⭐ AUTO COINS (every 5 minutes)
     setInterval(() => {
       if (auth.currentUser) {
         autoAddCoin(auth.currentUser);
