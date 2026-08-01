@@ -284,7 +284,7 @@
       <p>No friends yet.</p>
     </div>
   </div>
-  <!-- ⭐ MEME FEED SECTION ⭐ -->
+<!-- ⭐ MEME FEED SECTION ⭐ -->
   <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
 
     <!-- POST BOX -->
@@ -447,8 +447,7 @@
     }
     return { safe:true };
   }
-
-  // ⭐ AUTO DELETE EXPIRED POSTS (1 WEEK)
+    // ⭐ AUTO DELETE EXPIRED POSTS (1 WEEK)
   async function deleteExpiredPosts() {
     const postsRef = collection(db, "posts");
     const snap = await getDocs(postsRef);
@@ -604,7 +603,9 @@
         };
       });
 
-      // ⭐ LIKE BUTTON LOGIC (ONLY LOGGED IN)
+    });
+  }
+  // ⭐ LIKE BUTTON LOGIC (ONLY LOGGED IN)
       feedDiv.querySelectorAll(".likeBtn").forEach(btn => {
         btn.onclick = async () => {
           if (!auth.currentUser) return;
@@ -777,6 +778,7 @@
       box.appendChild(div);
     }
   }
+
   // ⭐ AUTH STATE
   onAuthStateChanged(auth, async user => {
     if (user) {
@@ -823,7 +825,7 @@
       document.getElementById("friendRequestsBox").style.display = "block";
       document.getElementById("friendsBox").style.display = "block";
 
-      // ⭐ POSTING
+      // ⭐ POSTING (UPDATED)
       const postButton = document.getElementById("postButton");
       const postText = document.getElementById("postText");
       const postStatus = document.getElementById("postStatus");
@@ -841,6 +843,37 @@
           return;
         }
 
+        // ⭐ GET USER DATA
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        const userData = userSnap.data();
+
+        const now = new Date();
+        const today = now.toDateString();
+
+        // ⭐ DAILY LIMIT RESET
+        let dailyCount = userData.dailyPostCount || 0;
+        if (userData.dailyPostDate !== today) {
+          dailyCount = 0;
+        }
+
+        // ⭐ DAILY LIMIT CHECK
+        if (dailyCount >= 10) {
+          postStatus.innerText = "You reached the 10 posts per day limit.";
+          return;
+        }
+
+        // ⭐ COOLDOWN CHECK (60 seconds)
+        const lastPost = userData.lastPostTime?.toDate() || new Date(0);
+        const secondsSinceLastPost = (now - lastPost) / 1000;
+
+        if (secondsSinceLastPost < 60) {
+          postStatus.innerText =
+            `Wait ${Math.ceil(60 - secondsSinceLastPost)} seconds before posting again.`;
+          return;
+        }
+
+        // ⭐ POSTING
         postStatus.innerText = "Posting...";
 
         const postID = crypto.randomUUID();
@@ -855,6 +888,13 @@
           reason: "",
           expiresAt: new Date(Date.now() + 7*24*60*60*1000),
           likes: []
+        });
+
+        // ⭐ UPDATE USER DATA (COOLDOWN + DAILY LIMIT)
+        await updateDoc(userRef, {
+          lastPostTime: serverTimestamp(),
+          dailyPostCount: dailyCount + 1,
+          dailyPostDate: today
         });
 
         postStatus.innerText = "Posted!";
@@ -905,3 +945,4 @@
 
 </body>
 </html>
+  
