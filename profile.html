@@ -143,12 +143,17 @@ onAuthStateChanged(auth, async user => {
   document.getElementById("joinedDisplay").innerText = "Joined: " + data.joined;
   document.getElementById("coinsDisplay").innerText = "Coins: " + data.coins;
 
-  // ⭐ FIX: Only show Edit Profile on YOUR profile
-  if (actualUID === user.uid) {
+  // ⭐ FIX: Always allow editing your own profile
+  if (!viewingUID || viewingUID === user.uid) {
     document.getElementById("editProfileBtn").style.display = "block";
   } else {
     document.getElementById("editProfileBtn").style.display = "none";
   }
+
+  // ⭐ Make Edit Profile button work
+  document.getElementById("editProfileBtn").onclick = () => {
+    window.location.href = "settings.html";
+  };
 
   // ⭐ FRIEND BUTTON LOGIC
   const friendBtn = document.getElementById("friendBtn");
