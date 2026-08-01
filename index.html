@@ -67,28 +67,6 @@
       transform: scale(1.1);
     }
 
-    /* ⭐ Privacy Button Style ⭐ */
-    .privacyBtn {
-      display:block;
-      width:250px;
-      margin:20px auto;
-      padding:12px;
-      text-align:center;
-      background:linear-gradient(90deg,#ff00ff,#00ffff);
-      border:3px solid #fff;
-      border-radius:10px;
-      font-family:'Comic Sans MS';
-      font-size:18px;
-      text-decoration:none;
-      color:#000;
-      box-shadow:0 0 10px #fff;
-      transition:0.2s;
-    }
-
-    .privacyBtn:hover {
-      transform: scale(1.1);
-    }
-
     #welcomeBox {
       font-size: 1.5rem;
       margin-top: 20px;
@@ -230,12 +208,55 @@
 
     <button id="loginBtn">Login</button>
     <button id="signupBtn">Sign Up</button>
+
     <button id="logoutBtn" style="display:none;">Logout</button>
 
-    <!-- ⭐ PRIVACY BUTTON INSERTED HERE ⭐ -->
-    <a href="privacy.html" class="privacyBtn">🔒 Privacy & Safety</a>
-
     <div id="welcomeBox"></div>
+  </div>
+
+  <a href="profile.html" style="color:#0ff; font-weight:bold;">My Profile</a>
+
+  <div class="banner">
+    <span>🎉 WELCOME TO THE OFFICIAL MEME ARCHIVE 🎉 YOU’VE ENTERED THE MEME ZONE 🎉</span>
+  </div>
+
+  <!-- ⭐ VISITOR COUNTER ⭐ -->
+  <div id="visitorCounter" style="
+    background: rgba(0,0,0,0.6);
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    font-size: 1.2rem;
+    margin: 20px auto;
+    width: fit-content;
+    box-shadow: 0 0 10px #fff;
+  ">
+    Visitor Count: loading...
+  </div>
+
+  <div class="container">
+    <h2>🔥 Legendary Memes 🔥</h2>
+    <ul>
+      <li><a href="memes/doge.html">🐶 Doge</a></li>
+      <li><a href="memes/rickroll.html">🎵 Rickroll</a></li>
+      <li><a href="quiz.html">🧠 Meme Personality Quiz</a></li>
+    </ul>
+  </div>
+
+  <!-- ⭐ FRIEND REQUESTS SECTION ⭐ -->
+  <div class="container" id="friendRequestsBox">
+    <h2>👥 Friend Requests</h2>
+    <div id="friendRequestsList">
+      <p>No friend requests.</p>
+    </div>
+  </div>
+
+  <!-- ⭐ FRIENDS LIST SECTION ⭐ -->
+  <div class="container" id="friendsBox">
+    <h2>🫂 Friends (<span id="friendsCount">0</span>)</h2>
+    <div id="friendsList">
+      <p>No friends yet.</p>
+    </div>
   </div>
   <!-- ⭐ MEME FEED SECTION ⭐ -->
   <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
