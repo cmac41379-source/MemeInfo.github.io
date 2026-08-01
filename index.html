@@ -439,7 +439,7 @@
 
   // ⭐ AI MODERATION
   function aiModerate(text) {
-    const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent"];
+    const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent","fuck","penis","dick","vagina","ass","asshole","butthole","shit","nigga","nigger","dickhead"];
     for (let w of badWords) {
       if (text.toLowerCase().includes(w)) {
         return { safe:false, reason:"Blocked word: " + w };
