@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coin Shop</title>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #ff00ff, #00ffff, #ffff00);
+      font-family: "Comic Sans MS", cursive;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
+      padding: 20px;
+      border-bottom: 4px solid #fff;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #fff; }
+      to { box-shadow: 0 0 30px #0ff; }
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-shadow: 2px 2px 10px #000;
+      margin: 0;
+    }
+
+    .item {
+      background: rgba(0,0,0,0.5);
+      border: 3px solid #fff;
+      width: 70%;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #fff;
+    }
+
+    button {
+      background: #00ffea;
+      border: 3px solid #fff;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: "Comic Sans MS";
+    }
+
+    button:hover {
+      background: #00c9ff;
+    }
+
+    #message {
+      font-size: 1.3rem;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🛒 Coin Shop</h1>
+  <p>Your coins: <span id="coinDisplay">0</span></p>
+</header>
+
+<!-- ⭐ SHOP ITEMS ⭐ -->
+<div class="item">
+  <h2>🔥 Trollface Avatar</h2>
+  <p>Cost: 20 coins</p>
+  <button onclick="buyItem('trollface', 20)">Buy</button>
+</div>
+
+<div class="item">
+  <h2>🍔 Cheems Avatar</h2>
+  <p>Cost: 25 coins</p>
+  <button onclick="buyItem('cheems', 25)">Buy</button>
+</div>
+
+<div class="item">
+  <h2>💪 Gigachad Avatar</h2>
+  <p>Cost: 40 coins</p>
+  <button onclick="buyItem('gigachad', 40)">Buy</button>
+</div>
+
+<p id="message"></p>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+    authDomain: "meme-encyclopedia.firebaseapp.com",
+    projectId: "meme-encyclopedia",
+    storageBucket: "meme-encyclopedia.firebasestorage.app",
+    messagingSenderId: "496237997014",
+    appId: "1:496237997014:web:382e628a4da83219ced277"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let userId = null;
+  let userCoins = 0;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      userId = user.uid;
+      const userRef = doc(db, "users", userId);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        userCoins = userSnap.data().coins || 0;
+        document.getElementById("coinDisplay").innerText = userCoins;
+      }
+    }
+  });
+
+  async function buyItem(itemName, cost) {
+    if (userCoins < cost) {
+      document.getElementById("message").innerText = "❌ Not enough coins!";
+      return;
+    }
+
+    userCoins -= cost;
+
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      coins: userCoins,
+      [`shop_${itemName}`]: true
+    });
+
+    document.getElementById("coinDisplay").innerText = userCoins;
+    document.getElementById("message").innerText = "✅ Purchase successful!";
+  }
+</script>
+
+</body>
+</html>
