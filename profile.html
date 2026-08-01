@@ -69,6 +69,11 @@
     <p id="joinedDisplay"></p>
     <p id="coinsDisplay"></p>
 
+    <!-- ⭐ MEMBERSHIP DISPLAY ⭐ -->
+    <h3>Membership Title</h3>
+    <p id="membershipDisplay">Loading...</p>
+    <div id="membershipButtons" style="margin-top:15px;"></div>
+
     <button id="editProfileBtn">Edit Profile</button>
     <button id="friendBtn">Add Friend</button>
   </div>
@@ -82,6 +87,7 @@
 
   <h2>User Posts</h2>
   <div id="postsContainer"></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
 import {
@@ -114,11 +120,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-// ⭐ URL PARAMS
+
 const urlParams = new URLSearchParams(window.location.search);
 const viewingUID = urlParams.get("uid");
 
-// ⭐ AUTH STATE
 onAuthStateChanged(auth, async user => {
   if (!user) {
     alert("You must be logged in.");
@@ -143,109 +148,48 @@ onAuthStateChanged(auth, async user => {
   document.getElementById("joinedDisplay").innerText = "Joined: " + data.joined;
   document.getElementById("coinsDisplay").innerText = "Coins: " + data.coins;
 
-  // ⭐ FIX: Always allow editing your own profile
+  // ⭐ MEMBERSHIP DISPLAY
+  document.getElementById("membershipDisplay").innerText =
+    data.membership_title || "None selected";
+
+  // ⭐ SHOW MEMBERSHIP BUTTONS (only for your own profile)
   if (!viewingUID || viewingUID === user.uid) {
-    document.getElementById("editProfileBtn").style.display = "block";
-  } else {
-    document.getElementById("editProfileBtn").style.display = "none";
+    const btnBox = document.getElementById("membershipButtons");
+    btnBox.innerHTML = "";
+
+    if (data.shop_trollface) {
+      const btn = document.createElement("button");
+      btn.innerText = "Use Trollface Member";
+      btn.style = "background:#ff00ff;border:3px solid #fff;padding:10px;margin:5px;border-radius:10px;cursor:pointer;";
+      btn.onclick = () => setMembership("TROLLFACE MEMBER");
+      btnBox.appendChild(btn);
+    }
+
+    if (data.shop_cheems) {
+      const btn = document.createElement("button");
+      btn.innerText = "Use Cheems Member";
+      btn.style = "background:#ffaa00;border:3px solid #fff;padding:10px;margin:5px;border-radius:10px;cursor:pointer;";
+      btn.onclick = () => setMembership("CHEEMS MEMBER");
+      btnBox.appendChild(btn);
+    }
+
+    if (data.shop_gigachad) {
+      const btn = document.createElement("button");
+      btn.innerText = "Use Gigachad Member";
+      btn.style = "background:#00ffea;border:3px solid #fff;padding:10px;margin:5px;border-radius:10px;cursor:pointer;";
+      btn.onclick = () => setMembership("GIGACHAD MEMBER");
+      btnBox.appendChild(btn);
+    }
   }
 
-  // ⭐ Make Edit Profile button work
-  document.getElementById("editProfileBtn").onclick = () => {
-    window.location.href = "settings.html";
-  };
-
-  // ⭐ FRIEND BUTTON LOGIC
-  const friendBtn = document.getElementById("friendBtn");
-
-  if (actualUID !== user.uid) {
-    friendBtn.style.display = "block";
+  async function setMembership(title) {
+    const userRef = doc(db, "users", user.uid);
+    await updateDoc(userRef, { membership_title: title });
+    document.getElementById("membershipDisplay").innerText = title;
+    alert("Membership updated to: " + title);
   }
 
-  const currentUserRef = doc(db, "users", user.uid);
-  const currentSnap = await getDoc(currentUserRef);
-  const currentData = currentSnap.data();
-
-  const isFriend = currentData.friends?.includes(actualUID);
-  const hasSent = currentData.sentRequests?.includes(actualUID);
-  const hasReceived = currentData.friendRequests?.includes(actualUID);
-
-  if (isFriend) {
-    friendBtn.innerText = "Unfriend";
-  } else if (hasSent) {
-    friendBtn.innerText = "Cancel Request";
-  } else if (hasReceived) {
-    friendBtn.innerText = "Accept Request";
-  } else {
-    friendBtn.innerText = "Add Friend";
-  }
-  // ⭐ FRIEND BUTTON ACTIONS
-  friendBtn.onclick = async () => {
-    const currentUserRef = doc(db, "users", user.uid);
-    const targetRef = doc(db, "users", actualUID);
-
-    const currentSnap = await getDoc(currentUserRef);
-    const targetSnap = await getDoc(targetRef);
-
-    const currentData = currentSnap.data();
-    const targetData = targetSnap.data();
-
-    // ADD FRIEND
-    if (friendBtn.innerText === "Add Friend") {
-      await updateDoc(targetRef, {
-        friendRequests: [...(targetData.friendRequests || []), user.uid]
-      });
-
-      await updateDoc(currentUserRef, {
-        sentRequests: [...(currentData.sentRequests || []), actualUID]
-      });
-
-      friendBtn.innerText = "Cancel Request";
-    }
-
-    // CANCEL REQUEST
-    else if (friendBtn.innerText === "Cancel Request") {
-      await updateDoc(targetRef, {
-        friendRequests: (targetData.friendRequests || []).filter(id => id !== user.uid)
-      });
-
-      await updateDoc(currentUserRef, {
-        sentRequests: (currentData.sentRequests || []).filter(id => id !== actualUID)
-      });
-
-      friendBtn.innerText = "Add Friend";
-    }
-
-    // ACCEPT REQUEST
-    else if (friendBtn.innerText === "Accept Request") {
-      await updateDoc(currentUserRef, {
-        friends: [...(currentData.friends || []), actualUID],
-        friendRequests: (currentData.friendRequests || []).filter(id => id !== actualUID)
-      });
-
-      await updateDoc(targetRef, {
-        friends: [...(targetData.friends || []), user.uid],
-        sentRequests: (targetData.sentRequests || []).filter(id => id !== user.uid)
-      });
-
-      friendBtn.innerText = "Unfriend";
-    }
-
-    // UNFRIEND
-    else if (friendBtn.innerText === "Unfriend") {
-      await updateDoc(currentUserRef, {
-        friends: (currentData.friends || []).filter(id => id !== actualUID)
-      });
-
-      await updateDoc(targetRef, {
-        friends: (targetData.friends || []).filter(id => id !== user.uid)
-      });
-
-      friendBtn.innerText = "Add Friend";
-    }
-  };
-
-  // ⭐ FIXED LOAD POSTS
+  // ⭐ POSTS WITH MEMBERSHIP TITLE
   const postsQuery = query(
     collection(db, "posts"),
     where("userID", "==", actualUID)
@@ -264,7 +208,7 @@ onAuthStateChanged(auth, async user => {
         div.className = "post";
 
         div.innerHTML = `
-          <strong>${post.username}</strong><br>
+          <strong>${post.username} — ${post.membership_title || ""}</strong><br>
           <p>${post.text}</p>
           <small>${post.timestamp?.toDate?.() || "Just now"}</small>
         `;
