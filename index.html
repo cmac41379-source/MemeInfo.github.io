@@ -477,17 +477,61 @@ function loadFeedLive() {
         `;
       }
 
+      // ⭐ COMMENTS UI ADDED HERE ⭐
       postEl.innerHTML = `
         <div style="display:flex; align-items:center;">
           <img src="${data.pfpURL || ''}" style="width:50px;height:50px;border-radius:50%;border:2px solid #000;margin-right:10px;">
           <strong><a href="profile.html?uid=${data.userID}" style="color:#00f;">${data.username || data.userID}</a></strong>
         </div>
+
         <p style="margin-top:10px;color:#000;">${data.text}</p>
         <small style="color:#000;">${data.timestamp?.toDate?.() || "Just now"}</small>
+
         ${deleteButton}
+
+        <!-- ⭐ COMMENT BOX ⭐ -->
+        <div style="margin-top:15px;">
+          <input type="text" class="commentInput" data-id="${docSnap.id}"
+            placeholder="Write a comment..."
+            style="width:100%;padding:8px;border:2px solid #000;border-radius:8px;">
+          <button class="commentBtn" data-id="${docSnap.id}"
+            style="margin-top:5px;padding:6px 10px;background:#00ff99;border:2px solid #000;border-radius:8px;cursor:pointer;">
+            Comment
+          </button>
+        </div>
+
+        <!-- ⭐ COMMENTS LIST ⭐ -->
+        <div class="commentsList" id="comments-${docSnap.id}" style="margin-top:10px;"></div>
       `;
 
       feedDiv.appendChild(postEl);
+
+      // ⭐ LIVE COMMENT LOADER
+      const commentsDiv = document.getElementById(`comments-${docSnap.id}`);
+
+      const cq = query(
+        collection(db, "posts", docSnap.id, "comments"),
+        orderBy("timestamp", "asc")
+      );
+
+      onSnapshot(cq, (commentSnap) => {
+        commentsDiv.innerHTML = "";
+
+        commentSnap.forEach(c => {
+          const cd = c.data();
+
+          const cEl = document.createElement("div");
+          cEl.style = "background:#eee;border:2px solid #000;padding:8px;border-radius:8px;margin-top:5px;color:#000;";
+
+          cEl.innerHTML = `
+            <strong>${cd.username}</strong>: ${cd.text}
+            <br>
+            <small>${cd.timestamp?.toDate?.() || ""}</small>
+          `;
+
+          commentsDiv.appendChild(cEl);
+        });
+      });
     });
 
     // ⭐ DELETE LOGIC
@@ -495,6 +539,26 @@ function loadFeedLive() {
       btn.onclick = async () => {
         const id = btn.getAttribute("data-id");
         await deleteDoc(doc(db, "posts", id));
+      };
+    });
+
+    // ⭐ COMMENT BUTTON LOGIC
+    feedDiv.querySelectorAll(".commentBtn").forEach(btn => {
+      btn.onclick = async () => {
+        const postID = btn.getAttribute("data-id");
+        const input = feedDiv.querySelector(`.commentInput[data-id="${postID}"]`);
+        const text = input.value.trim();
+
+        if (text.length === 0) return;
+
+        await setDoc(doc(collection(db, "posts", postID, "comments")), {
+          userID: auth.currentUser.uid,
+          username: auth.currentUser.email,
+          text: text,
+          timestamp: serverTimestamp()
+        });
+
+        input.value = "";
       };
     });
   });
@@ -702,7 +766,7 @@ onAuthStateChanged(auth, async user => {
         approved: true,
         flagged: false,
         reason: "",
-        // ⭐ 1 WEEK EXPIRATION
+        // ⭐ 1 WEEK EXPIRATION (UPDATED)
         expiresAt: new Date(Date.now() + 7*24*60*60*1000)
       });
 
