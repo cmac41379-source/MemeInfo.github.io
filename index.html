@@ -391,7 +391,6 @@ async function updateVisitorCounter(user) {
   document.getElementById("visitorCounter").innerText =
     "Visitor Count: " + visits;
 }
-
 // ⭐ COINS
 async function updateCoinDisplay(user) {
   const userRef = doc(db, "users", user.uid);
@@ -533,7 +532,6 @@ function loadFeedLive() {
         });
       });
     });
-
     // ⭐ DELETE LOGIC
     feedDiv.querySelectorAll(".deletePostBtn").forEach(btn => {
       btn.onclick = async () => {
@@ -553,7 +551,7 @@ function loadFeedLive() {
 
         await setDoc(doc(collection(db, "posts", postID, "comments")), {
           userID: auth.currentUser.uid,
-          username: userData.username || auth.currentUser.email,
+          username: auth.currentUser.email,
           text: text,
           timestamp: serverTimestamp()
         });
