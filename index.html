@@ -211,7 +211,6 @@
 
     <button id="logoutBtn" style="display:none;">Logout</button>
 
-    <!-- PRIVACY & SAFETY BUTTON -->
     <a href="privacy.html"
        style="display:block; width:250px; margin:20px auto; padding:12px; 
        text-align:center; background:linear-gradient(90deg,#ff00ff,#00ffff);
@@ -230,7 +229,6 @@
     <span>🎉 WELCOME TO THE OFFICIAL MEME ARCHIVE 🎉 YOU’VE ENTERED THE MEME ZONE 🎉</span>
   </div>
 
-  <!-- ⭐ VISITOR COUNTER ⭐ -->
   <div id="visitorCounter" style="
     background: rgba(0,0,0,0.6);
     padding: 10px 15px;
@@ -255,38 +253,42 @@
       <li><a href="memes/cheems.html">🍔 Cheems</a></li>
     </ul>
   </div>
-  <div style="
-  text-align:center;
-  margin: 30px 0;
-">
-  <a href="shop.html" style="
-    display:inline-block;
-    background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
-    padding: 20px 40px;
-    font-size: 2rem;
-    font-family: 'Comic Sans MS', cursive;
-    color: #fff;
-    border: 4px solid #fff;
-    border-radius: 15px;
-    text-decoration: none;
-    box-shadow: 0 0 20px #fff;
-  ">
-    🛒 Coin Shop
-  </a>
-</div>
 
-<!-- ⭐ TROLLFACE VAULT BUTTON (hidden by default) ⭐ -->
-<div id="trollfaceVaultButton" style="display:none; margin-top:15px;">
-  <a href="trollface-vault.html"
-     style="display:block; width:250px; margin:10px auto; padding:12px;
-     text-align:center; background:linear-gradient(90deg,#ff00ff,#aa00ff);
-     border:3px solid #fff; border-radius:10px; font-family:'Comic Sans MS';
-     font-size:18px; text-decoration:none; color:#fff; box-shadow:0 0 10px #fff;">
-     😈 Trollface Vault
-  </a>
-</div>
-  
-  <!-- ⭐ FRIEND REQUESTS SECTION ⭐ -->
+  <!-- ⭐ NEW: MEME OF THE DAY ⭐ -->
+  <div class="container" id="memeOfDayBox">
+    <h2>🌟 Meme of the Day 🌟</h2>
+    <div id="memePollArea">
+      Loading poll...
+    </div>
+  </div>
+
+  <div style="text-align:center; margin: 30px 0;">
+    <a href="shop.html" style="
+      display:inline-block;
+      background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
+      padding: 20px 40px;
+      font-size: 2rem;
+      font-family: 'Comic Sans MS', cursive;
+      color: #fff;
+      border: 4px solid #fff;
+      border-radius: 15px;
+      text-decoration: none;
+      box-shadow: 0 0 20px #fff;
+    ">
+      🛒 Coin Shop
+    </a>
+  </div>
+
+  <div id="trollfaceVaultButton" style="display:none; margin-top:15px;">
+    <a href="trollface-vault.html"
+       style="display:block; width:250px; margin:10px auto; padding:12px;
+       text-align:center; background:linear-gradient(90deg,#ff00ff,#aa00ff);
+       border:3px solid #fff; border-radius:10px; font-family:'Comic Sans MS';
+       font-size:18px; text-decoration:none; color:#fff; box-shadow:0 0 10px #fff;">
+       😈 Trollface Vault
+    </a>
+  </div>
+
   <div class="container" id="friendRequestsBox">
     <h2>👥 Friend Requests</h2>
     <div id="friendRequestsList">
@@ -294,13 +296,73 @@
     </div>
   </div>
 
-  <!-- ⭐ FRIENDS LIST SECTION ⭐ -->
   <div class="container" id="friendsBox">
     <h2>🫂 Friends (<span id="friendsCount">0</span>)</h2>
     <div id="friendsList">
       <p>No friends yet.</p>
     </div>
   </div>
+
+  <!-- ⭐ MEME OF THE DAY SCRIPT ⭐ -->
+  <script>
+    const memeNames = ["Doge", "Rickroll", "67", "Chumms", "Cheems", "Nyan Cat", "Trollface"];
+    const POLL_DURATION = 60 * 60 * 1000;
+    const DAY_DURATION = 24 * 60 * 60 * 1000;
+
+    function startMemePoll() {
+      const now = Date.now();
+      const lastPollTime = localStorage.getItem("memePollTime");
+      const savedWinner = localStorage.getItem("memeWinner");
+
+      if (lastPollTime && savedWinner && now - lastPollTime < DAY_DURATION) {
+        showWinner(savedWinner);
+        return;
+      }
+
+      if (lastPollTime && now - lastPollTime < POLL_DURATION) {
+        const option1 = localStorage.getItem("pollOption1");
+        const option2 = localStorage.getItem("pollOption2");
+        showPoll(option1, option2);
+        return;
+      }
+
+      const option1 = memeNames[Math.floor(Math.random() * memeNames.length)];
+      const option2 = memeNames[Math.floor(Math.random() * memeNames.length)];
+
+      localStorage.setItem("pollOption1", option1);
+      localStorage.setItem("pollOption2", option2);
+      localStorage.setItem("memePollTime", now);
+
+      showPoll(option1, option2);
+    }
+
+    function showPoll(option1, option2) {
+      document.getElementById("memePollArea").innerHTML = `
+        <p>Which meme should be the Meme of the Day?</p>
+        <button onclick="vote('${option1}')">${option1}</button>
+        <button onclick="vote('${option2}')">${option2}</button>
+        <p>Poll ends in 1 hour.</p>
+      `;
+    }
+
+    function vote(meme) {
+      localStorage.setItem("memeWinner", meme);
+      showWinner(meme);
+    }
+
+    function showWinner(meme) {
+      document.getElementById("memePollArea").innerHTML = `
+        <h3>${meme}</h3>
+        <p>is the MEME OF THE DAY 🎉</p>
+      `;
+    }
+
+    startMemePoll();
+  </script>
+
+</body>
+</html>
+
 <!-- ⭐ MEME FEED SECTION ⭐ -->
 <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
 
