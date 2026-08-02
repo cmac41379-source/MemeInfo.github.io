@@ -189,6 +189,23 @@ onAuthStateChanged(auth, async user => {
     alert("Membership updated to: " + title);
   }
 
+  // ⭐ FIX #1 — Correct Edit Profile visibility
+  const editBtn = document.getElementById("editProfileBtn");
+  const friendBtn = document.getElementById("friendBtn");
+
+  if (actualUID === user.uid) {
+    editBtn.style.display = "block";
+    friendBtn.style.display = "none";
+  } else {
+    editBtn.style.display = "none";
+    friendBtn.style.display = "block";
+  }
+
+  // ⭐ FIX #2 — Make Edit Profile button work
+  editBtn.onclick = () => {
+    window.location.href = "settings.html";
+  };
+
   // ⭐ POSTS WITH MEMBERSHIP TITLE
   const postsQuery = query(
     collection(db, "posts"),
