@@ -301,7 +301,7 @@
       <p>No friends yet.</p>
     </div>
   </div>
-  <!-- ⭐ MEME FEED SECTION ⭐ -->
+<!-- ⭐ MEME FEED SECTION ⭐ -->
   <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
 
     <!-- POST BOX -->
@@ -522,6 +522,7 @@
         postEl.style = "background:#fff; border:3px solid #000; padding:15px; border-radius:10px; margin-bottom:20px;";
 
         let deleteButton = "";
+
         // ⭐ ONLY ADMIN (YOU) SEES DELETE BUTTON
         if (auth.currentUser && auth.currentUser.email === "cmac41379@gmail.com") {
           deleteButton = `
@@ -708,7 +709,8 @@
       };
     });
   }
-   // ⭐ ACCEPT FRIEND REQUEST
+
+  // ⭐ ACCEPT FRIEND REQUEST
   async function acceptFriendRequest(currentUserId, requesterId) {
     const currentUserRef = doc(db, "users", currentUserId);
     const requesterRef = doc(db, "users", requesterId);
@@ -908,4 +910,4 @@
   </script>
 
 </body>
-</html> 
+</html>
