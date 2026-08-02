@@ -301,7 +301,7 @@
       <p>No friends yet.</p>
     </div>
   </div>
-<!-- ⭐ MEME FEED SECTION ⭐ -->
+  <!-- ⭐ MEME FEED SECTION ⭐ -->
   <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
 
     <!-- POST BOX -->
@@ -491,8 +491,7 @@
 
   // run every hour
   setInterval(deleteExpiredPosts, 3600000);
-
-  // ⭐ LIVE FEED LOADER
+   // ⭐ LIVE FEED LOADER
   function loadFeedLive() {
     const feedDiv = document.getElementById("feed");
 
@@ -709,7 +708,6 @@
       };
     });
   }
-
   // ⭐ ACCEPT FRIEND REQUEST
   async function acceptFriendRequest(currentUserId, requesterId) {
     const currentUserRef = doc(db, "users", currentUserId);
@@ -910,4 +908,4 @@
   </script>
 
 </body>
-</html>
+</html>  
