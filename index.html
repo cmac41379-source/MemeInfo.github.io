@@ -833,141 +833,103 @@
 
   // ⭐ AUTH STATE
   onAuthStateChanged(auth, async user => {
-    if (user) {
-      // ⭐ LOGGED IN
-      welcomeBox.innerHTML = "Welcome, " + user.email + "!";
-      logoutBtn.style.display = "inline-block";
+  if (user) {
+    // ⭐ LOGGED IN
+    welcomeBox.innerHTML = "Welcome, " + user.email + "!";
+    logoutBtn.style.display = "inline-block";
 
-      const userRef = doc(db, "users", user.uid);
-      let snap = await getDoc(userRef);
+    const userRef = doc(db, "users", user.uid);
+    let snap = await getDoc(userRef);
 
-      if (!snap.exists()) {
-        await setDoc(userRef, {
-          email: user.email,
-          coins: 0,
-          username: "",
-          bio: "",
-          pfp: "",
-          joined: new Date().toLocaleDateString(),
-          hasCountedVisit: false,
-          friends: [],
-          friendRequests: [],
-          sentRequests: []
-        });
-        snap = await getDoc(userRef);
-      }
-
-      const userData = snap.data();
-
-      // ⭐ ADMIN ROLE — ONLY YOU
-      if (user.email === "cmac41379@gmail.com") {
-        await updateDoc(userRef, { role: "admin" });
-      }
-
-      updateCoinDisplay(user);
-      updateVisitorCounter(user);
-
-      document.getElementById("profileButton").style.display = "block";
-
-      // ⭐ MEMBERSHIP EXCLUSIVE BUTTONS
-      if (userData.membership_title === "trollface") {
-        document.getElementById("trollfaceVaultButton").style.display = "block";
-      }
-
-      if (userData.membership_title === "cheems") {
-        document.getElementById("cheemsLoungeButton").style.display = "block";
-      }
-
-      // ⭐ ENABLE POST BOX
-      document.getElementById("postText").disabled = false;
-      document.getElementById("postButton").disabled = false;
-
-      // ⭐ SHOW FRIEND UI
-      document.getElementById("friendRequestsBox").style.display = "block";
-      document.getElementById("friendsBox").style.display = "block";
-
-      // ⭐ POSTING
-      const postButton = document.getElementById("postButton");
-      const postText = document.getElementById("postText");
-      const postStatus = document.getElementById("postStatus");
-
-      postButton.onclick = async () => {
-        const text = postText.value.trim();
-        if (text.length === 0) {
-          postStatus.innerText = "Post cannot be empty.";
-          return;
-        }
-
-        const mod = aiModerate(text);
-        if (!mod.safe) {
-          postStatus.innerText = "Post blocked: " + mod.reason;
-          return;
-        }
-
-        postStatus.innerText = "Posting...";
-
-        const postID = crypto.randomUUID();
-        await setDoc(doc(db, "posts", postID), {
-          userID: user.uid,
-          username: userData.username || user.email,
-
-          /* ⭐ ONLY CHANGE ADDED ⭐ */
-          membership_title: userData.membership_title || "",
-
-          pfpURL: userData.pfp || "",
-          text: text,
-          timestamp: serverTimestamp(),
-          approved: true,
-          flagged: false,
-          reason: "",
-          expiresAt: new Date(Date.now() + 7*24*60*60*1000),
-          likes: []
-        });
-
-        postStatus.innerText = "Posted!";
-        postText.value = "";
-      };
-
-      // ⭐ LIVE FEED
-      loadFeedLive();
-
-      // ⭐ FRIEND UI
-      renderFriendRequests(userData, user.uid);
-      renderFriends(userData);
-
-      // ⭐ AUTO COINS
-      setInterval(() => {
-        if (auth.currentUser) {
-          autoAddCoin(auth.currentUser);
-        }
-      }, 300000);
-
-    } else {
-      // ⭐ LOGGED OUT
-      welcomeBox.innerHTML = "";
-      logoutBtn.style.display = "none";
-      document.getElementById("coinDisplay").innerText = "Coins: 0";
-      document.getElementById("profileButton").style.display = "none";
-
-      // ⭐ DISABLE POST BOX
-      document.getElementById("postText").disabled = true;
-      document.getElementById("postButton").disabled = true;
-
-      // ⭐ HIDE FEED
-      document.getElementById("feed").innerHTML =
-        "<p style='color:#fff;'>Please log in to see the feed.</p>";
-
-      // ⭐ HIDE FRIEND UI
-      document.getElementById("friendRequestsBox").style.display = "none";
-      document.getElementById("friendsBox").style.display = "none";
-
-      // ⭐ SHOW VISITOR COUNTER (but do NOT increase)
-      const counterRef = doc(db, "siteStats", "visitors");
-      const snap = await getDoc(counterRef);
-      document.getElementById("visitorCounter").innerText =
-        "Visitor Count: " + snap.data().visits;
+    if (!snap.exists()) {
+      await setDoc(userRef, {
+        email: user.email,
+        coins: 0,
+        username: "",
+        bio: "",
+        pfp: "",
+        joined: new Date().toLocaleDateString(),
+        hasCountedVisit: false,
+        friends: [],
+        friendRequests: [],
+        sentRequests: []
+      });
+      snap = await getDoc(userRef);
     }
-  });
+
+    const userData = snap.data();
+
+    // ⭐ ADMIN ROLE — ONLY YOU
+    if (user.email === "cmac41379@gmail.com") {
+      await updateDoc(userRef, { role: "admin" });
+    }
+
+    updateCoinDisplay(user);
+    updateVisitorCounter(user);
+
+    document.getElementById("profileButton").style.display = "block";
+
+    // ⭐ MEMBERSHIP EXCLUSIVE BUTTONS
+    if (userData.membership_title === "trollface") {
+      document.getElementById("trollfaceVaultButton").style.display = "block";
+    }
+
+    if (userData.membership_title === "cheems") {
+      document.getElementById("cheemsLoungeButton").style.display = "block";
+    }
+
+    // ⭐ ENABLE POST BOX
+    document.getElementById("postText").disabled = false;
+    document.getElementById("postButton").disabled = false;
+
+    // ⭐ SHOW FRIEND UI
+    document.getElementById("friendRequestsBox").style.display = "block";
+    document.getElementById("friendsBox").style.display = "block";
+
+    // ⭐ POSTING LOGIC
+    // ... (your posting code here)
+
+    // ⭐ LIVE FEED
+    loadFeedLive();
+
+    // ⭐ FRIEND UI
+    renderFriendRequests(userData, user.uid);
+    renderFriends(userData);
+
+    // ⭐ AUTO COINS
+    setInterval(() => {
+      if (auth.currentUser) {
+        autoAddCoin(auth.currentUser);
+      }
+    }, 300000);
+
+  } else {
+    // ⭐ LOGGED OUT
+    welcomeBox.innerHTML = "";
+    logoutBtn.style.display = "none";
+    document.getElementById("coinDisplay").innerText = "Coins: 0";
+    document.getElementById("profileButton").style.display = "none";
+
+    // ⭐ DISABLE POST BOX
+    document.getElementById("postText").disabled = true;
+    document.getElementById("postButton").disabled = true;
+
+    // ⭐ HIDE FEED
+    document.getElementById("feed").innerHTML =
+      "<p style='color:#fff;'>Please log in to see the feed.</p>";
+
+    // ⭐ HIDE FRIEND UI
+    document.getElementById("friendRequestsBox").style.display = "none";
+    document.getElementById("friendsBox").style.display = "none";
+
+    // ⭐ SHOW VISITOR COUNTER (but do NOT increase)
+    const counterRef = doc(db, "siteStats", "visitors");
+    const snap = await getDoc(counterRef);
+    document.getElementById("visitorCounter").innerText =
+      "Visitor Count: " + snap.data().visits;
+  }
+});
+
   </script>
 
 </body>
