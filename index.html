@@ -131,17 +131,6 @@
       box-shadow: 0 0 20px #ff0;
     }
 
-    .timeline {
-      width: 80%;
-      margin: 40px auto;
-      border-left: 5px solid #fff;
-      padding-left: 20px;
-      box-shadow: 0 0 20px #fff;
-      background: rgba(0,0,0,0.4);
-      border-radius: 10px;
-      text-align: left;
-    }
-
     footer {
       background: #000;
       color: #0f0;
@@ -149,13 +138,6 @@
       font-size: 1rem;
       border-top: 3px solid #fff;
       text-shadow: 0 0 10px #0f0;
-    }
-
-    .inspired {
-      font-size: 0.9rem;
-      color: #ff0;
-      text-shadow: 0 0 5px #ff0;
-      margin-top: 5px;
     }
   </style>
 </head>
@@ -254,7 +236,7 @@
     </ul>
   </div>
 
-  <!-- ⭐ NEW: MEME OF THE DAY ⭐ -->
+  <!-- ⭐ MEME OF THE DAY ⭐ -->
   <div class="container" id="memeOfDayBox">
     <h2>🌟 Meme of the Day 🌟</h2>
     <div id="memePollArea">
@@ -305,8 +287,22 @@
 
   <!-- ⭐ MEME OF THE DAY SCRIPT ⭐ -->
   <script>
-    const memeNames = ["Doge", "Rickroll", "67", "Chumms", "Cheems", "Nyan Cat", "Trollface"];
-    const POLL_DURATION = 60 * 60 * 1000;
+    const memeNames = [
+      "Doge",
+      "Rickroll",
+      "Nyan Cat",
+      "Trollface",
+      "Cheems",
+      "67",
+      "Skibidi Toilet",
+      "Fanum Tax",
+      "Ohio Memes",
+      "Bad Luck Brian",
+      "Grumpy Cat",
+      "Pepe the Frog"
+    ];
+
+    const POLL_DURATION = 60 * 1000; // ⭐ 1 minute
     const DAY_DURATION = 24 * 60 * 60 * 1000;
 
     function startMemePoll() {
@@ -333,7 +329,12 @@
       localStorage.setItem("pollOption2", option2);
       localStorage.setItem("memePollTime", now);
 
+      localStorage.setItem("votes_" + option1, 0);
+      localStorage.setItem("votes_" + option2, 0);
+
       showPoll(option1, option2);
+
+      setTimeout(endPoll, POLL_DURATION);
     }
 
     function showPoll(option1, option2) {
@@ -341,13 +342,34 @@
         <p>Which meme should be the Meme of the Day?</p>
         <button onclick="vote('${option1}')">${option1}</button>
         <button onclick="vote('${option2}')">${option2}</button>
-        <p>Poll ends in 1 hour.</p>
+        <p>Poll ends in 1 minute.</p>
       `;
     }
 
     function vote(meme) {
-      localStorage.setItem("memeWinner", meme);
-      showWinner(meme);
+      let currentVotes = parseInt(localStorage.getItem("votes_" + meme)) || 0;
+      localStorage.setItem("votes_" + meme, currentVotes + 1);
+    }
+
+    function endPoll() {
+      const option1 = localStorage.getItem("pollOption1");
+      const option2 = localStorage.getItem("pollOption2");
+
+      const votes1 = parseInt(localStorage.getItem("votes_" + option1)) || 0;
+      const votes2 = parseInt(localStorage.getItem("votes_" + option2)) || 0;
+
+      let winner;
+
+      if (votes1 > votes2) {
+        winner = option1;
+      } else if (votes2 > votes1) {
+        winner = option2;
+      } else {
+        winner = Math.random() < 0.5 ? option1 : option2;
+      }
+
+      localStorage.setItem("memeWinner", winner);
+      showWinner(winner);
     }
 
     function showWinner(meme) {
@@ -362,6 +384,7 @@
 
 </body>
 </html>
+
 
 <!-- ⭐ MEME FEED SECTION ⭐ -->
 <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
