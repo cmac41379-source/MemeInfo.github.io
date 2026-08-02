@@ -845,6 +845,15 @@
 
       document.getElementById("profileButton").style.display = "block";
 
+      // ⭐ MEMBERSHIP EXCLUSIVE BUTTONS
+      if (userData.membership_title === "trollface") {
+        document.getElementById("trollfaceVaultButton").style.display = "block";
+      }
+
+      if (userData.membership_title === "cheems") {
+        document.getElementById("cheemsLoungeButton").style.display = "block";
+      }
+
       // ⭐ ENABLE POST BOX
       document.getElementById("postText").disabled = false;
       document.getElementById("postButton").disabled = false;
@@ -878,7 +887,7 @@
           userID: user.uid,
           username: userData.username || user.email,
 
-          /* ⭐ MEMBERSHIP SAVE FIX ⭐ */
+          /* ⭐ ONLY CHANGE ADDED ⭐ */
           membership_title: userData.membership_title || "",
 
           pfpURL: userData.pfp || "",
