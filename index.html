@@ -461,7 +461,7 @@ async function autoAddCoin(user) {
 
 // ⭐ AI MODERATION
 function aiModerate(text) {
-  const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent"];
+  const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent","doxx","private info","address request","address","location","ip","tracking link","https","http","www","com","net","org","io","fuck","nigga","nigger","nga","bitch","shit","cunt","motherfucker","mf","piss off","penis","dick","manhood","ass","asshole","butt","butthole","masturbate","masturbation","cocaine","drugs","alcohol","heroin","fentanyl","methadone","morphine","oxycodone","diazepam","valium","alprazolam","xanax","nicotine","vape","ciggarretes"];
   for (let w of badWords) {
     if (text.toLowerCase().includes(w)) {
       return { safe:false, reason:"Blocked word: " + w };
