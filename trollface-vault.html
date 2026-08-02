@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>😈 Trollface Vault</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ff00ff, #000000);
+      font-family: "Comic Sans MS";
+      color: #fff;
+      text-align: center;
+    }
+    #postBox {
+      background:#fff; border:3px solid #000; padding:20px; border-radius:15px;
+      width:80%; margin:20px auto; color:#000;
+    }
+    #feed {
+      width:80%; margin:20px auto;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>😈 TROLLFACE VAULT 😈</h1>
+  <p><strong>Only Trollface Members may enter.</strong></p>
+
+  <div id="postBox">
+    <textarea id="postText" placeholder="Post something chaotic..."
+      style="width:100%; height:120px; padding:10px; border:2px solid #000; border-radius:10px;"></textarea>
+    <button id="postButton"
+      style="margin-top:10px; padding:10px 20px; border:3px solid #000; background:#ff00ff; cursor:pointer;">
+      Post to Trollface Vault
+    </button>
+    <p id="postStatus"></p>
+  </div>
+
+  <div id="feed"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc,
+    collection, serverTimestamp, query, orderBy, onSnapshot
+  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+    authDomain: "meme-encyclopedia.firebaseapp.com",
+    projectId: "meme-encyclopedia",
+    storageBucket: "meme-encyclopedia.firebasestorage.app",
+    messagingSenderId: "496237997014",
+    appId: "1:496237997014:web:382e628a4da83219ced277"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ⭐ MEMBERSHIP CHECK
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+    const data = snap.data();
+
+    if (data.membership_title !== "trollface") {
+      document.body.innerHTML = `
+        <h1>🚫 MEMBERS ONLY 🚫</h1>
+        <p>You must be a Trollface Member to enter the Vault.</p>
+        <a href="shop.html">Go to Shop</a>
+      `;
+      return;
+    }
+
+    // ⭐ POSTING
+    const postButton = document.getElementById("postButton");
+    const postText = document.getElementById("postText");
+    const postStatus = document.getElementById("postStatus");
+
+    postButton.onclick = async () => {
+      const text = postText.value.trim();
+      if (text.length === 0) return;
+
+      const postID = crypto.randomUUID();
+      await setDoc(doc(db, "trollface_posts", postID), {
+        userID: user.uid,
+        username: data.username || user.email,
+        text: text,
+        timestamp: serverTimestamp()
+      });
+
+      postStatus.innerText = "Posted!";
+      postText.value = "";
+    };
+
+    // ⭐ FEED
+    const feedDiv = document.getElementById("feed");
+    const q = query(collection(db, "trollface_posts"), orderBy("timestamp", "desc"));
+
+    onSnapshot(q, snap => {
+      feedDiv.innerHTML = "";
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        const el = document.createElement("div");
+        el.style = "background:#fff; border:3px solid #000; padding:15px; margin:10px; border-radius:10px; color:#000;";
+        el.innerHTML = `
+          <strong>${d.username}</strong><br>
+          ${d.text}<br>
+          <small>${d.timestamp?.toDate?.()}</small>
+        `;
+        feedDiv.appendChild(el);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
