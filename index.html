@@ -285,91 +285,144 @@
     </div>
   </div>
 
-  <!-- ⭐ MEME OF THE DAY SCRIPT ⭐ -->
-  <script>
+  <!-- ⭐ FIREBASE + FIRESTORE + GLOBAL DAILY POLL ⭐ -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+      getFirestore, doc, getDoc, setDoc, updateDoc 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import {
+      getAuth, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcEOwx6eKMm_-6vIV1ZuRwPIXvYHAFHWQ",
+      authDomain: "meme-encyclopedia.firebaseapp.com",
+      projectId: "meme-encyclopedia",
+      storageBucket: "meme-encyclopedia.firebasestorage.app",
+      messagingSenderId: "496237997014",
+      appId: "1:496237997014:web:382e628a4da83219ced277"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
     const memeNames = [
-      "Doge",
-      "Rickroll",
-      "Nyan Cat",
-      "Trollface",
-      "Cheems",
-      "67",
-      "Skibidi Toilet",
-      "Fanum Tax",
-      "Ohio Memes",
-      "Bad Luck Brian",
-      "Grumpy Cat",
-      "Pepe the Frog"
+      "Doge","Rickroll","Nyan Cat","Trollface","Cheems","67",
+      "Skibidi Toilet","Fanum Tax","Ohio Memes","Bad Luck Brian",
+      "Grumpy Cat","Pepe the Frog"
     ];
 
-    const POLL_DURATION = 60 * 1000; // ⭐ 1 minute
-    const DAY_DURATION = 24 * 60 * 60 * 1000;
+    const DAY_MS = 24 * 60 * 60 * 1000;
 
-    function startMemePoll() {
+    async function loadDailyPoll(user) {
+      const pollRef = doc(db, "poll", "daily");
+      const pollSnap = await getDoc(pollRef);
+
       const now = Date.now();
-      const lastPollTime = localStorage.getItem("memePollTime");
-      const savedWinner = localStorage.getItem("memeWinner");
 
-      if (lastPollTime && savedWinner && now - lastPollTime < DAY_DURATION) {
-        showWinner(savedWinner);
-        return;
+      if (!pollSnap.exists()) {
+        return createNewPoll();
       }
 
-      if (lastPollTime && now - lastPollTime < POLL_DURATION) {
-        const option1 = localStorage.getItem("pollOption1");
-        const option2 = localStorage.getItem("pollOption2");
-        showPoll(option1, option2);
-        return;
+      const pollData = pollSnap.data();
+
+      if (now - pollData.startTime >= DAY_MS) {
+        return createNewPoll();
       }
 
+      if (pollData.winner) {
+        showWinner(pollData.winner);
+      } else {
+        showPoll(pollData.option1, pollData.option2, user);
+      }
+    }
+
+    async function createNewPoll() {
       const option1 = memeNames[Math.floor(Math.random() * memeNames.length)];
       const option2 = memeNames[Math.floor(Math.random() * memeNames.length)];
 
-      localStorage.setItem("pollOption1", option1);
-      localStorage.setItem("pollOption2", option2);
-      localStorage.setItem("memePollTime", now);
+      const pollRef = doc(db, "poll", "daily");
 
-      localStorage.setItem("votes_" + option1, 0);
-      localStorage.setItem("votes_" + option2, 0);
+      await setDoc(pollRef, {
+        option1,
+        option2,
+        startTime: Date.now(),
+        winner: null
+      });
 
       showPoll(option1, option2);
-
-      setTimeout(endPoll, POLL_DURATION);
     }
 
-    function showPoll(option1, option2) {
+    async function vote(meme) {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("You must be logged in to vote!");
+        return;
+      }
+
+      const voteRef = doc(db, "votes", user.uid);
+      const voteSnap = await getDoc(voteRef);
+
+      if (voteSnap.exists()) {
+        alert("You already voted today!");
+        return;
+      }
+
+      await setDoc(voteRef, {
+        meme,
+        time: Date.now()
+      });
+
+      const pollRef = doc(db, "poll", "daily");
+      const pollSnap = await getDoc(pollRef);
+      const pollData = pollSnap.data();
+
+      const votesRef = doc(db, "poll", "dailyVotes");
+      const votesSnap = await getDoc(votesRef);
+
+      let votes = votesSnap.exists() ? votesSnap.data() : {
+        [pollData.option1]: 0,
+        [pollData.option2]: 0
+      };
+
+      votes[meme]++;
+
+      await setDoc(votesRef, votes);
+
+      alert("Vote counted!");
+    }
+
+    async function checkWinner() {
+      const pollRef = doc(db, "poll", "daily");
+      const pollSnap = await getDoc(pollRef);
+      const pollData = pollSnap.data();
+
+      const votesRef = doc(db, "poll", "dailyVotes");
+      const votesSnap = await getDoc(votesRef);
+
+      if (!votesSnap.exists()) return;
+
+      const votes = votesSnap.data();
+
+      let winner = pollData.option1;
+      if (votes[pollData.option2] > votes[pollData.option1]) {
+        winner = pollData.option2;
+      }
+
+      await updateDoc(pollRef, { winner });
+
+      showWinner(winner);
+    }
+
+    function showPoll(option1, option2, user) {
       document.getElementById("memePollArea").innerHTML = `
         <p>Which meme should be the Meme of the Day?</p>
         <button onclick="vote('${option1}')">${option1}</button>
         <button onclick="vote('${option2}')">${option2}</button>
-        <p>Poll ends in 1 minute.</p>
+        <p>Poll ends at midnight.</p>
       `;
-    }
-
-    function vote(meme) {
-      let currentVotes = parseInt(localStorage.getItem("votes_" + meme)) || 0;
-      localStorage.setItem("votes_" + meme, currentVotes + 1);
-    }
-
-    function endPoll() {
-      const option1 = localStorage.getItem("pollOption1");
-      const option2 = localStorage.getItem("pollOption2");
-
-      const votes1 = parseInt(localStorage.getItem("votes_" + option1)) || 0;
-      const votes2 = parseInt(localStorage.getItem("votes_" + option2)) || 0;
-
-      let winner;
-
-      if (votes1 > votes2) {
-        winner = option1;
-      } else if (votes2 > votes1) {
-        winner = option2;
-      } else {
-        winner = Math.random() < 0.5 ? option1 : option2;
-      }
-
-      localStorage.setItem("memeWinner", winner);
-      showWinner(winner);
     }
 
     function showWinner(meme) {
@@ -379,7 +432,11 @@
       `;
     }
 
-    startMemePoll();
+    onAuthStateChanged(auth, (user) => {
+      loadDailyPoll(user);
+    });
+
+    window.vote = vote;
   </script>
 
 </body>
