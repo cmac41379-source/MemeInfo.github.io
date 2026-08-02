@@ -244,6 +244,21 @@
     Visitor Count: loading...
   </div>
 
+  <!-- ⭐ REAL-TIME ONLINE USERS ⭐ -->
+  <div id="onlineUsersCounter" style="
+    background: rgba(0,0,0,0.6);
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 2px solid #0ff;
+    font-size: 1.2rem;
+    margin: 10px auto;
+    width: fit-content;
+    box-shadow: 0 0 10px #0ff;
+    font-family: 'Comic Sans MS';
+  ">
+    Online Users: loading...
+  </div>
+
   <div class="container">
     <h2>🔥 Legendary Memes 🔥</h2>
     <ul>
@@ -255,6 +270,7 @@
       <li><a href="memes/cheems.html">🍔 Cheems</a></li>
     </ul>
   </div>
+
   <div style="
   text-align:center;
   margin: 30px 0;
@@ -301,6 +317,7 @@
       <p>No friends yet.</p>
     </div>
   </div>
+
 <!-- ⭐ MEME FEED SECTION ⭐ -->
   <div id="feedSection" style="width: 100%; max-width: 600px; margin: 40px auto;">
 
@@ -710,7 +727,7 @@
     });
   }
 
-  // ⭐ ACCEPT FRIEND REQUEST
+// ⭐ ACCEPT FRIEND REQUEST
   async function acceptFriendRequest(currentUserId, requesterId) {
     const currentUserRef = doc(db, "users", currentUserId);
     const requesterRef = doc(db, "users", requesterId);
@@ -880,6 +897,34 @@
       }
     }, 300000);
 
+    /* ⭐ REAL-TIME ONLINE USERS ⭐ */
+    import {
+      getDatabase,
+      ref,
+      set,
+      onDisconnect,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const rtdb = getDatabase();
+    const userStatusRef = ref(rtdb, "onlineUsers/" + user.uid);
+
+    // Mark user online
+    set(userStatusRef, true);
+
+    // Remove when disconnected
+    onDisconnect(userStatusRef).remove();
+
+    // Listen for changes
+    const onlineUsersRef = ref(rtdb, "onlineUsers");
+    onValue(onlineUsersRef, snapshot => {
+      const val = snapshot.val() || {};
+      const count = Object.keys(val).length;
+
+      document.getElementById("onlineUsersCounter").innerText =
+        "Online Users: " + count;
+    });
+
   } else {
     // ⭐ LOGGED OUT
     welcomeBox.innerHTML = "";
@@ -904,6 +949,10 @@
     const snap = await getDoc(counterRef);
     document.getElementById("visitorCounter").innerText =
       "Visitor Count: " + snap.data().visits;
+
+    // ⭐ CLEAR ONLINE USERS DISPLAY
+    document.getElementById("onlineUsersCounter").innerText =
+      "Online Users: 0";
   }
 });
 
