@@ -435,15 +435,23 @@
       "Coins: " + snap.data().coins;
   }
 
+  // ⭐ BOOSTED AUTO COINS (membership-based)
   async function autoAddCoin(user) {
     const userRef = doc(db, "users", user.uid);
     const snap = await getDoc(userRef);
-    const coins = snap.data().coins;
+    const data = snap.data();
 
-    await updateDoc(userRef, { coins: coins + 1 });
+    let coinsToAdd = 1; // default
+
+    if (data.membership_title === "trollface") coinsToAdd = 2;
+    if (data.membership_title === "cheems") coinsToAdd = 3;
+    if (data.membership_title === "gigachad") coinsToAdd = 6;
+
+    await updateDoc(userRef, { coins: data.coins + coinsToAdd });
     updateCoinDisplay(user);
   }
-// ⭐ AI MODERATION
+
+  // ⭐ AI MODERATION
   function aiModerate(text) {
     const badWords = ["nsfw","porn","sex","kill","die","slur","racist","gore","blood","gross","violent"];
     for (let w of badWords) {
